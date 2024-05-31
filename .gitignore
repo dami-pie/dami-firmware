@@ -9,3 +9,5 @@ data/configs/env/*
 certs/*
 **/__pycache__/*
 logs/*
+.env
+.env.developer
