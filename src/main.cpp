@@ -1,44 +1,17 @@
-#include <Arduino.h>
+#include "main.h"
 
-#include "screen.h"
-#include "api.h"
-#include "otp.h"
-#include "RFID.h"
+WiFiClient client;
+MQTTClient mqtt;
+SemaphoreHandle_t mutex;
 
-#define DOOR_PIN 4
-#define BUZZER_PIN 2
-
-TaskHandle_t ui_wacher;
-volatile bool reconnecting = false;
-volatile bool connected = false;
-
-void ui_watch(void *args)
+void ui_task(void *args)
 {
-  for (;; delay(lv_timer_handler()))
+  for (uint32_t d;; vTaskDelay(20))
   {
-    if (connected)
-    {
-      show_layout(LV_SYMBOL_WIFI "\tConectado", GREEN_COLOR);
-      getUpdate();
-      codeUpdate(
-          otp.getCode(
-              mktime(&timeInfo)));
-    }
-    else if (reconnecting)
-      show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
-    else
-      show_layout(LV_SYMBOL_CLOSE "\tDesconectado", RED_COLOR);
+    xSemaphoreTake(mutex, portMAX_DELAY);
+    lv_timer_handler();
+    xSemaphoreGive(mutex);
   }
-}
-
-bool trigger() { return mfrc522.PICC_IsNewCardPresent(); }
-void action()
-{
-  String tagId;
-  if (Tag.getTagID(tagId))
-    mqtt_client.publish("card", tagId.c_str());
-  else
-    Serial.println("Erro on read NFC tag...");
 }
 
 void setup(void)
@@ -46,32 +19,63 @@ void setup(void)
 
   Serial.begin(115200); /* prepare for possible serial debug */
   Serial.setDebugOutput(true);
-  Serial.println();
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  for (size_t i = 0; i < 100; i++)
+  {
+    if (WiFi.status() == WL_CONNECTED)
+      break;
+    else
+      delay(100);
+  }
+
+  if (WiFi.status() != WL_CONNECTED)
+    ESP.restart();
+  else
+    log_i("Connected to %s!", WIFI_SSID);
+
+  mqtt.setClient(client);
+  mqtt.setServer("public.mqtthq.com", 1883);
+  mqtt.setCallback([](char *topic, uint8_t *data, size_t size)
+                   {
+    
+    char str[size];
+    memcpy(str, (const char*)data, size);
+    log_i("%s", str);
+    lv_qrcode_update(ui_QRCodeLogin, data, size);
+    ; });
+
+  mqtt.setReconnectCallback([](MQTTClient *client)
+                            { 
+                              if(client) {
+                                client->connect(WiFi.macAddress().c_str());
+                                client->subscribe(SECURITY_KEY);
+                              }
+                              xSemaphoreTake(mutex, portMAX_DELAY);
+                              yield();
+                              show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
+                              xSemaphoreGive(mutex); });
   setup_screen();
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
   codeUpdate("wating...");
-  client.begin(trigger, action);
-  delay(lv_timer_handler());
-  xTaskCreate(ui_watch, "ui", 10000, NULL, 2, &ui_wacher);
-  Tag.begin();
+
+  mutex = xSemaphoreCreateMutex();
+  mqtt.begin();
+  xTaskCreate(ui_task, "ui", 8192U, NULL, 1, &ui_wacher);
 }
 
 void loop()
 {
-  if (is_client_connected())
+  if (WiFi.status() == WL_CONNECTED && mqtt.connected())
   {
-    connected = true;
-    reconnecting = false;
-  }
-  else if (WiFi.status() == WL_CONNECTED)
-  {
-    connected = false;
-    reconnecting = true;
+    show_layout(LV_SYMBOL_WIFI "\tConectado", GREEN_COLOR);
+    // codeUpdate(
+    //     otp.getCode(
+    //         mktime(&timeInfo)));
   }
   else
-  {
-    connected = false;
-    reconnecting = false;
-  }
-  client.loop();
+    show_layout(LV_SYMBOL_CLOSE "\tDesconectado", RED_COLOR);
+
+  getUpdate();
+  delay(1000);
+  // vTaskDelay(500 / portTICK_PERIOD_MS);
 }

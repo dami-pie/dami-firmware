@@ -2,18 +2,19 @@
 
 byte *load_key()
 {
-  File key_file = load_file("/configs/env/otp.config.bin");
+  auto key_file = load_file(OTP_SECRET_FILE);
   if (!key_file)
   {
-    Serial.println("[OTP]: Error on load key");
+    log_e("[OTP]: Error on load key");
     return NULL;
   }
 
   byte *key = (byte *)malloc(key_file.available());
   key_file.readBytes((char *)key, sizeof(key));
-  // Serial.println("------ SECURE KEY -----");
-  // Serial.write(key, sizeof(key));
-  // Serial.println("\n-----------------------");
+  log_i("------ SECURE KEY -----");
+  log_i("%s", key);
+  log_i("-----------------------");
+
   return key;
 }
 byte *key = load_key();

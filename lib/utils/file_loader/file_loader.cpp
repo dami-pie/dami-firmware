@@ -1,10 +1,10 @@
 #include "file_loader.h"
 
-File load_file(const char *file_path)
+fs::File load_file(const char *file_path)
 {
-  if (!SPIFFS.begin(true))
+  if (!SPIFFS.begin())
   {
-    Serial.println("[SPIFFS]: An Error has occurred while mounting SPIFFS");
+    log_e("An Error has occurred while mounting SPIFFS");
     return File();
   }
   return SPIFFS.open(file_path);

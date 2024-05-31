@@ -4,6 +4,6 @@
 #include <Arduino.h>
 #include "SPIFFS.h"
 
-File load_file(const char *file_path);
+fs::File load_file(const char *file_path);
 
 #endif

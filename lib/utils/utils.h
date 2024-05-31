@@ -3,5 +3,6 @@
 
 #include "ntpTime/ntpTime.h"
 #include "file_loader/file_loader.h"
+#include "hash.h"
 
 #endif
