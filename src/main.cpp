@@ -2,16 +2,15 @@
 
 WiFiClient client;
 MQTTClient mqtt;
-SemaphoreHandle_t mutex;
+QueueHandle_t ui_render_queue = xQueueCreate(255, 1);
 
 void ui_task(void *args)
 {
-  for (uint32_t d;; vTaskDelay(20))
-  {
-    xSemaphoreTake(mutex, portMAX_DELAY);
-    lv_timer_handler();
-    xSemaphoreGive(mutex);
-  }
+  for (uint32_t max_delay = 0;; max_delay = lv_timer_handler())
+    xQueueReceive(ui_render_queue, &max_delay, max_delay > 1000 ? 1000 : max_delay);
+
+  log_w("ui_task terminated!");
+  vTaskDelete(NULL);
 }
 
 void setup(void)
@@ -42,6 +41,7 @@ void setup(void)
     memcpy(str, (const char*)data, size);
     log_i("%s", str);
     lv_qrcode_update(ui_QRCodeLogin, data, size);
+    xQueueSend(ui_render_queue, str, portMAX_DELAY);
     ; });
 
   mqtt.setReconnectCallback([](MQTTClient *client)
@@ -50,17 +50,15 @@ void setup(void)
                                 client->connect(WiFi.macAddress().c_str());
                                 client->subscribe(SECURITY_KEY);
                               }
-                              xSemaphoreTake(mutex, portMAX_DELAY);
+                              
                               yield();
-                              show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
-                              xSemaphoreGive(mutex); });
+                              show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR); });
   setup_screen();
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
   codeUpdate("wating...");
 
-  mutex = xSemaphoreCreateMutex();
   mqtt.begin();
-  xTaskCreate(ui_task, "ui", 8192U, NULL, 1, &ui_wacher);
+  xTaskCreate(ui_task, "ui", 4096, NULL, 1, &ui_wacher);
 }
 
 void loop()
@@ -76,6 +74,5 @@ void loop()
     show_layout(LV_SYMBOL_CLOSE "\tDesconectado", RED_COLOR);
 
   getUpdate();
-  delay(1000);
-  // vTaskDelay(500 / portTICK_PERIOD_MS);
+  vTaskDelay(500 / portTICK_PERIOD_MS);
 }
