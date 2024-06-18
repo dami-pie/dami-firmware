@@ -46,3 +46,12 @@ void mqtt_client_loop_task(void *_client)
 
   vTaskDelete(NULL);
 }
+
+void setup_mqtt()
+{
+  mqtt.setClient(client);
+  mqtt.setServer("public.mqtthq.com", 1883);
+  mqtt.setCallback(message_callback);
+  mqtt.setReconnectCallback(reconnect_callback);
+  mqtt.begin();
+}

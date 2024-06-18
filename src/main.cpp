@@ -18,6 +18,9 @@ void setup(void)
 
   Serial.begin(115200); /* prepare for possible serial debug */
   Serial.setDebugOutput(true);
+  setup_screen();
+  show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   for (size_t i = 0; i < 100; i++)
   {
@@ -32,32 +35,9 @@ void setup(void)
   else
     log_i("Connected to %s!", WIFI_SSID);
 
-  mqtt.setClient(client);
-  mqtt.setServer("public.mqtthq.com", 1883);
-  mqtt.setCallback([](char *topic, uint8_t *data, size_t size)
-                   {
-    
-    char str[size];
-    memcpy(str, (const char*)data, size);
-    log_i("%s", str);
-    lv_qrcode_update(ui_QRCodeLogin, data, size);
-    xQueueSend(ui_render_queue, str, portMAX_DELAY);
-    ; });
+  codeUpdate("0000");
+  setup_mqtt();
 
-  mqtt.setReconnectCallback([](MQTTClient *client)
-                            { 
-                              if(client) {
-                                client->connect(WiFi.macAddress().c_str());
-                                client->subscribe(SECURITY_KEY);
-                              }
-                              
-                              yield();
-                              show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR); });
-  setup_screen();
-  show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
-  codeUpdate("wating...");
-
-  mqtt.begin();
   xTaskCreate(ui_task, "ui", 4096, NULL, 1, &ui_wacher);
 }
 
@@ -75,4 +55,26 @@ void loop()
 
   getUpdate();
   vTaskDelay(500 / portTICK_PERIOD_MS);
+}
+
+void message_callback(char *topic, uint8_t *data, size_t size)
+{
+  char str[size];
+  memcpy(str, (const char *)data, size);
+  log_i("%s", str);
+  lv_qrcode_update(ui_QRCodeLogin, data, size);
+  xQueueSend(ui_render_queue, str, portMAX_DELAY);
+  ;
+}
+
+void reconnect_callback(MQTTClient *client)
+{
+  if (client)
+  {
+    client->connect(WiFi.macAddress().c_str());
+    client->subscribe(SECURITY_KEY);
+  }
+
+  yield();
+  show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
 }
