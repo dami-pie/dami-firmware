@@ -40,7 +40,7 @@ void mqtt_client_loop_task(void *_client)
   log_i("Stating loop...");
   for (;; client->loop())
   {
-    if (!client->connected())
+    if (WiFi.status() == WL_CONNECTED && !client->connected())
       client->reconnect();
   }
 
@@ -50,7 +50,7 @@ void mqtt_client_loop_task(void *_client)
 void setup_mqtt()
 {
   mqtt.setClient(client);
-  mqtt.setServer("public.mqtthq.com", 1883);
+  mqtt.setServer(CONFIG_BROKER_URL, CONFIG_BROKER_PORT);
   mqtt.setCallback(message_callback);
   mqtt.setReconnectCallback(reconnect_callback);
   mqtt.begin();
