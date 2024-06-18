@@ -23,24 +23,11 @@ void setup(void)
   codeUpdate("0000");
   lv_timer_handler();
   setup_eap_network();
-
-  // WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  // for (size_t i = 0; i < 100; i++)
-  // {
-  //   if (WiFi.status() == WL_CONNECTED)
-  //     break;
-  //   else
-  //     delay(100);
-  // }
-
-  // if (WiFi.status() != WL_CONNECTED)
-  //   ESP.restart();
-  // else
-  //   log_i("Connected to %s!", WIFI_SSID);
-
   setup_mqtt();
 
-  xTaskCreate(ui_task, "ui", 4096, NULL, 1, &ui_wacher);
+  xTaskCreate(update_totp_task, "totp update", 2048, NULL, 1, NULL);
+  xTaskCreate(ui_task, "ui", 4096, NULL, 2, &ui_wacher);
+  xTaskCreate(update_qr_code, "ui_update_qr_code", 2048, NULL, 1, &ui_wacher);
 }
 
 void loop()
@@ -81,4 +68,20 @@ void reconnect_callback(MQTTClient *client)
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
 
   vTaskDelay(5000);
+}
+
+void update_qr_code(void *)
+{
+
+  for (;;)
+  {
+    xSemaphoreTake(totp_mutex, portMAX_DELAY);
+    log_i("updating qr code value to %s", curr_otp);
+    lv_qrcode_update(ui_QRCodeLogin, curr_otp, 4);
+    log_i("update %s!", pdTRUE == xQueueSend(ui_render_queue, curr_otp, portMAX_DELAY) ? "done" : "fail");
+    xSemaphoreGive(totp_mutex);
+    vTaskDelay(100);
+  }
+
+  vTaskDelete(NULL);
 }

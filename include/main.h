@@ -11,4 +11,5 @@ TaskHandle_t ui_wacher;
 volatile bool reconnecting = false;
 volatile bool connected = false;
 
+void update_qr_code(void *);
 #endif // __main_h__
