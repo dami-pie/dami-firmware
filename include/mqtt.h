@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include <WiFi.h>
+#include "WiFiClientSecure.h"
 
 void mqtt_client_loop_task(void *_client);
 
@@ -54,7 +55,7 @@ void setup_mqtt();
 void message_callback(char *topic, uint8_t *data, size_t size);
 void reconnect_callback(MQTTClient *);
 
-extern WiFiClient client;
+extern WiFiClientSecure client;
 extern MQTTClient mqtt;
 
 #endif // __mqtt_client_handle_h__

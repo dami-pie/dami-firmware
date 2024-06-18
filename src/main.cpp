@@ -1,6 +1,6 @@
 #include "main.h"
 
-WiFiClient client;
+WiFiClientSecure client;
 MQTTClient mqtt;
 QueueHandle_t ui_render_queue = xQueueCreate(255, 1);
 
@@ -79,4 +79,6 @@ void reconnect_callback(MQTTClient *client)
 
   yield();
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
+
+  vTaskDelay(5000);
 }
