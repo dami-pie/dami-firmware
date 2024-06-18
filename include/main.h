@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "mqtt.h"
+#include "wifi.h"
 #include "screen.h"
 #include "otp.h"
 

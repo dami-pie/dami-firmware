@@ -1,11 +1,11 @@
 #include "wifi_setups.h"
 
-bool await_connection_result(wl_status_t status = WL_CONNECTED, uint32_t timeout = 15000UL)
+bool await_connection_result(wl_status_t status, uint32_t timeout)
 {
   for (uint32_t i = 0; WiFi.status() != status && i < timeout; i += 100)
     delay(100);
 
-  return WiFi.status() != WL_CONNECTED;
+  return WiFi.status() == status;
 }
 
 void setup_eap_network()

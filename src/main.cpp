@@ -20,22 +20,24 @@ void setup(void)
   Serial.setDebugOutput(true);
   setup_screen();
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
-
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  for (size_t i = 0; i < 100; i++)
-  {
-    if (WiFi.status() == WL_CONNECTED)
-      break;
-    else
-      delay(100);
-  }
-
-  if (WiFi.status() != WL_CONNECTED)
-    ESP.restart();
-  else
-    log_i("Connected to %s!", WIFI_SSID);
-
   codeUpdate("0000");
+  lv_timer_handler();
+  setup_eap_network();
+
+  // WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  // for (size_t i = 0; i < 100; i++)
+  // {
+  //   if (WiFi.status() == WL_CONNECTED)
+  //     break;
+  //   else
+  //     delay(100);
+  // }
+
+  // if (WiFi.status() != WL_CONNECTED)
+  //   ESP.restart();
+  // else
+  //   log_i("Connected to %s!", WIFI_SSID);
+
   setup_mqtt();
 
   xTaskCreate(ui_task, "ui", 4096, NULL, 1, &ui_wacher);
