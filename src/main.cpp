@@ -78,7 +78,8 @@ void update_qr_code(void *)
   {
     xSemaphoreTake(totp_mutex, portMAX_DELAY);
     log_i("updating qr code value to %s", curr_otp);
-    lv_qrcode_update(ui_QRCodeLogin, curr_otp, 4);
+    // lv_qrcode_update(ui_QRCodeLogin, curr_otp, 4);
+    codeUpdate((CONFIG_BASE_CLIENT_URL "?q=" + config.id.toString() + "&oq=") + curr_otp);
     log_i("update %s!", pdTRUE == xQueueSend(ui_render_queue, curr_otp, portMAX_DELAY) ? "done" : "fail");
     xSemaphoreGive(totp_mutex);
     vTaskDelay(100);
