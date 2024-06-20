@@ -61,7 +61,7 @@ void reconnect_callback(MQTTClient *client)
 {
   if (client)
   {
-    client->connect(WiFi.macAddress().c_str());
+    client->connect(config.id.toString().c_str());
     client->subscribe(SECURITY_KEY);
   }
 
