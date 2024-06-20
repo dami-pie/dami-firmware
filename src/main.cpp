@@ -22,7 +22,8 @@ void setup(void)
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
   codeUpdate("0000");
   lv_timer_handler();
-  setup_eap_network();
+  load_config();
+  setup_wifi();
   setup_mqtt();
 
   xTaskCreate(update_totp_task, "totp update", 2048, NULL, 1, NULL);

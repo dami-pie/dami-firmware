@@ -3,10 +3,9 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include "config/config_data.h"
 
 bool await_connection_result(wl_status_t status = WL_CONNECTED, uint32_t timeout = 15000UL);
-
-void setup_eap_network();
-
-void setup_default_network();
+void setup_network(size_t index);
+void setup_wifi();
 #endif // __wifi_setups_h__
