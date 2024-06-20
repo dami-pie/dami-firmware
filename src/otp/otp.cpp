@@ -43,7 +43,6 @@ void update_totp_task(void *)
   for (;;)
   {
     memcpy(new_otp, otp.getCode(mktime(&timeInfo)), 4);
-    log_i("current otp: %s %s", new_otp, curr_otp);
     if (!compare(new_otp))
     {
       log_i("OTP changed...");
