@@ -1,85 +1,75 @@
 #include "config_loader.h"
 
-void set_wifi_to_default_settings()
+void set_wifi_to_default()
 {
-  config.wifi.main_accesss_point = 0;
-  config.wifi.saved_access_points[0].ssid = WIFI_SSID;
-  config.wifi.saved_access_points[0].password = WIFI_PASSWORD;
-  config.wifi.saved_access_points[0].security = WPA2_ACESS_POINT;
+  config.wifi.main_ap = 0;
+  config.wifi.saved_ap[0].ssid = WIFI_SSID;
+  config.wifi.saved_ap[0].password = WIFI_PASSWORD;
+  config.wifi.saved_ap[0].security = WPA2_ACCESS_POINT;
 
-  config.wifi.saved_access_points[1].ssid = EAP_SSID;
-  config.wifi.saved_access_points[1].username = EAP_SSID;
-  config.wifi.saved_access_points[1].password = EAP_PASSWORD;
-  config.wifi.saved_access_points[1].security = PEAP_ACESS_POINT;
+  config.wifi.saved_ap[1].ssid = EAP_SSID;
+  config.wifi.saved_ap[1].username = EAP_PASSWORD;
+  config.wifi.saved_ap[1].password = EAP_PASSWORD;
+  config.wifi.saved_ap[1].security = PEAP_ACCESS_POINT;
 }
 
-void set_ntp_to_dafault_settings()
+void set_ntp_to_default()
 {
-  config.ntp.ntp_server[0] = NTP_SERVER_1;
-  config.ntp.ntp_server[1] = NTP_SERVER_2;
+  config.ntp.servers[0] = NTP_SERVER_1;
+  config.ntp.servers[1] = NTP_SERVER_2;
 }
 
-void load_wifi_config()
+void load_configuration(const char *path, void *config, size_t size, std::function<void()> to_default = NULL)
 {
-  File config_file = SPIFFS.open(WIFI_CONF_FILE);
-  size_t content_size;
-  if (config_file && config_file.available())
+  if (config == NULL)
   {
-    config_file.read((byte *)&config.wifi, sizeof(wifi_settings_t));
-  }
-  else if (!SPIFFS.exists(WIFI_CONF_FILE))
-  {
-    config_file = SPIFFS.open(WIFI_CONF_FILE, "w", true);
-    set_wifi_to_default_settings();
-    config_file.write((byte *)&config.wifi, sizeof(wifi_settings_t));
-  }
-  else
-    log_e("Fail to load configuration. Unable to open %s file", WIFI_CONF_FILE);
-  config_file.close();
-}
-
-void load_ntp_config()
-{
-  File config_file = SPIFFS.open(NTP_SERVERS_CONF_FILE);
-  size_t content_size;
-  if (config_file && config_file.available())
-  {
-    config_file.read((byte *)&config.ntp, sizeof(ntp_config_t));
-  }
-  else if (!SPIFFS.exists(NTP_SERVERS_CONF_FILE))
-  {
-    config_file = SPIFFS.open(NTP_SERVERS_CONF_FILE, "w", true);
-    set_ntp_to_dafault_settings();
-    config_file.write((byte *)&config.ntp, sizeof(ntp_config_t));
-  }
-  else
-    log_e("Fail to load configuration. Unable to open %s file", NTP_SERVERS_CONF_FILE);
-  config_file.close();
-}
-
-void load_broker_config()
-{
-  if (!SPIFFS.exists(BROKER_CONF_FILE))
+    log_e("Impossible to load configuration! configuration pointer is null.");
     return;
+  }
 
-  File config_file = SPIFFS.open(BROKER_CONF_FILE);
+  File config_file = SPIFFS.open(path);
   size_t content_size;
+
   if (config_file && config_file.available())
   {
-    config_file.read((byte *)&config.broker, sizeof(broker_config_t));
+    log_i("Loading configuration file %s...", path);
+    auto total_read = config_file.read((byte *)config, size);
+    log_d("%u bytes readd from %s", total_read, path);
+  }
+  else if (to_default != NULL && !SPIFFS.exists(path))
+  {
+    log_w("Unable to open %s, file dons't exists. Saving default values...", path);
+    to_default();
+    config_file = SPIFFS.open(path, "w", true);
+    config_file.write((byte *)config, size);
   }
   else
-    log_e("Fail to load configuration. Unable to open %s file", BROKER_CONF_FILE);
-  config_file.close();
+    log_e("Fail to load configuration. Unable to open %s file", path);
+
+  if (config_file)
+  {
+    log_d("Closing file");
+    config_file.close();
+  }
 }
 
 void load_config()
 {
   SPIFFS.begin();
-  config.id = SPIFFS.open(DEVICE_ID_FILE);
-  config.secret = SPIFFS.open(OTP_SECRET_FILE);
+  log_i("Loading system configs");
 
-  load_wifi_config();
-  load_ntp_config();
-  load_broker_config();
+  config.id = SPIFFS.open(DEVICE_ID_FILE);
+  log_i("ID loaeded %s", config.id.toString().c_str());
+
+  config.secret = SPIFFS.open(OTP_SECRET_FILE);
+  log_d("Secret loaeded %s", config.secret.toString().c_str());
+
+  // load wifi configurations from file
+  load_configuration(WIFI_CONF_FILE, &config.wifi, sizeof(wifi_settings_t), set_wifi_to_default);
+
+  // load ntp configurations from file
+  load_configuration(NTP_SERVERS_CONF_FILE, &(config.ntp), sizeof(ntp_config_t), set_ntp_to_default);
+
+  // load broker configurations from file
+  // load_configuration(BROKER_CONF_FILE, &(config.broker), sizeof(broker_config_t));
 }

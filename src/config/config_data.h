@@ -6,9 +6,9 @@
 
 typedef enum : uint8_t
 {
-  PEAP_ACESS_POINT = 1,
-  WPA2_ACESS_POINT = 2,
-  WPA_ACESS_POINT = 3
+  PEAP_ACCESS_POINT = 1,
+  WPA2_ACCESS_POINT = 2,
+  WPA_ACCESS_POINT = 3
 } access_point_security_t;
 
 typedef struct
@@ -27,14 +27,14 @@ typedef struct
 
 typedef struct
 {
-  uint8_t main_accesss_point;
-  wifi_access_point_save_t saved_access_points[4];
+  uint8_t main_ap;
+  wifi_access_point_save_t saved_ap[4];
 } wifi_settings_t;
 
 typedef struct
 {
   uint16_t offset;
-  StaticString<16> ntp_server[3];
+  StaticString<16> servers[3];
 } ntp_config_t;
 
 typedef struct

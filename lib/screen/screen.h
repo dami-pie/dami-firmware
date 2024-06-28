@@ -19,6 +19,7 @@
 #define WHITE_COLOR 0xFCFBF7
 #define GREEN_COLOR 0x9DF393
 #define BROWN_COLOR 0xF4B896
+#define BLUE_COLOR 0x9393F8
 #define RED_COLOR 0xF81212
 
 static LGFX lcd;                   // declare display variable

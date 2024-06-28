@@ -6,6 +6,6 @@
 
 extern struct tm timeInfo;
 
-void timer__begin(long gmtOffSet = 0, int dayLightOffSet = 0, String ntpServer = NTP_SERVER_2);
+// void setup_rtc(long gmtOffSet = 0, int dayLightOffSet = 0, String ntpServer = NTP_SERVER_2);
 
-std::tuple<String, String> timeUpdate();
+std::tuple<String, String> timeUpdate(uint32_t timeout = 5000UL);

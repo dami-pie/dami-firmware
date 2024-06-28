@@ -60,5 +60,16 @@
                 "thread": "cpp",
                 "cinttypes": "cpp",
                 "typeinfo": "cpp"
-        }
+        },
+        "cSpell.words": [
+                "Conectado",
+                "dami",
+                "Desconectado",
+                "MQTT",
+                "PEAP",
+                "PROGMEM",
+                "qrcode",
+                "Reconectando",
+                "totp"
+        ]
 }

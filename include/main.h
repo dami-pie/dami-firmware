@@ -7,11 +7,12 @@
 #include "screen.h"
 #include "otp.h"
 #include "config.h"
+#include "cmd/cmd.h"
 
-TaskHandle_t ui_wacher;
+TaskHandle_t ui_watcher;
 device_configurations_t config;
 volatile bool reconnecting = false;
 volatile bool connected = false;
 
-void update_qr_code(void *);
+void update_qr_code_task(void *);
 #endif // __main_h__

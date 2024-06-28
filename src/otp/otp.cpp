@@ -1,27 +1,9 @@
 #include "otp.h"
 
-byte *key = load_key();
 char curr_otp[4];
 SemaphoreHandle_t totp_mutex;
-TOTP otp(key, sizeof(key), 10);
 
-byte *load_key()
-{
-  auto key_file = load_file(OTP_SECRET_FILE);
-  if (!key_file)
-  {
-    log_e("[OTP]: Error on load key");
-    return NULL;
-  }
-
-  byte *key = (byte *)malloc(key_file.available());
-  key_file.readBytes((char *)key, sizeof(key));
-  log_i("------ SECURE KEY -----");
-  log_i("%s", key);
-  log_i("-----------------------");
-
-  return key;
-}
+TOTP otp(reinterpret_cast<uint8_t *>(config.secret.getBuffer()), 128, 15);
 
 bool compare(char *str)
 {

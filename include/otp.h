@@ -4,8 +4,8 @@
 
 #include "TOTP.h"
 #include "utils.h"
+#include "config/config_data.h"
 
-byte *load_key();
 void update_totp_task(void *);
 
 extern TOTP otp;

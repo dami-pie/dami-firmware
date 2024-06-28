@@ -35,13 +35,11 @@ void getUpdate()
 
 void setup_screen()
 {
-  log_w("Turning on LCD display");
+  log_i("Turning on LCD display");
   File config_file = load_file("/configs/ui/brightness");
   byte brightness = static_cast<byte>(
       config_file.readStringUntil(EOF).toInt());
-  log_w("Screen brightness set to %u", brightness);
-
-    timer__begin(gmtOffset);
+  log_i("Screen brightness set to %u", brightness);
 
   /*------------------- LCD CONFIG --------------------/
    1. Initialize LovyanGFX

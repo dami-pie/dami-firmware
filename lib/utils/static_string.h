@@ -65,9 +65,23 @@ public:
   }
 
   /**
-   * @brief Atribue um valor ao buffer baseado numa String
+   * @brief Atribue um valor ao buffer baseado numa string
    * @return StaticString<buffer_size>
    */
+  StaticString<buffer_size> &set(const char *str)
+  {
+    size_t str_len = strlen(str);
+    if (str_len <= buffer_size)
+    {
+      strcpy(buffer, str);
+      len = str_len;
+    }
+    else
+      log_e("String \"%s\" is bigger that current buffer. Buffer size: %u", str, buffer_size);
+
+    return *(this);
+  }
+
   StaticString<buffer_size> &set(String str)
   {
     if (str.length() <= buffer_size)
@@ -108,16 +122,23 @@ public:
   /** @return tamanho da string */
   size_t length() { return this->len; };
 
-  /* Opeadores */
+  const char *c_str(bool noz = false)
+  {
+    if (!len && noz)
+      return NULL;
+    else
+      return toString().c_str();
+  }
 
+  /* Opeadores */
   bool operator==(const String &rhs) const { return equals(rhs); }
   bool operator!=(const String &rhs) const { return !equals(rhs); }
   char operator[](size_t index) { return this->buffer[index]; }
-  const char *operator=(StaticString<buffer_size> sstr) { return String(buffer).c_str(); }
+  const char *operator=(StaticString<buffer_size> sstr) { return sstr.c_str(); }
   String operator=(StaticString<buffer_size> &sstr) { return sstr.toString(); }
   StaticString<buffer_size> &operator=(String &str) { return set(str); }
-  StaticString<buffer_size> &operator=(const char *cstr) { return set((String)(cstr)); }
-  StaticString<buffer_size> &operator=(char *str) { return set((String)str); }
+  StaticString<buffer_size> &operator=(const char *cstr) { return set(cstr); }
+  StaticString<buffer_size> &operator=(char *str) { return set(String(str)); }
   StaticString<buffer_size> &operator=(fs::File file) { return this->set_from_file(file); }
 
   String &operator+(const String &str) const { return str + String(buffer); }

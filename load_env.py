@@ -32,7 +32,7 @@ for file_path in file_paths:
             var = nline.split('=')
             key, value = var[0], var[1]
             is_str = bool(test_str.match(value))
-            env[key] = f"'{value}'" if  is_str >= 1 else value
+            env[key] = f"'{value}'".replace("\\", '\\\\') if  is_str >= 1 else value
             
   except:
     pass
