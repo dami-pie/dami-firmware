@@ -59,10 +59,10 @@ void load_config()
   log_i("Loading system configs");
 
   config.id = SPIFFS.open(DEVICE_ID_FILE);
-  log_i("ID loaeded %s", config.id.toString().c_str());
+  log_i("ID loaded %s", config.id.toString().c_str());
 
   config.secret = SPIFFS.open(OTP_SECRET_FILE);
-  log_d("Secret loaeded %s", config.secret.toString().c_str());
+  log_d("Secret loaded %s", config.secret.toString().c_str());
 
   // load wifi configurations from file
   load_configuration(WIFI_CONF_FILE, &config.wifi, sizeof(wifi_settings_t), set_wifi_to_default);

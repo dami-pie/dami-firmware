@@ -9,5 +9,6 @@ data/configs/env/*
 certs/*
 **/__pycache__/*
 logs/*
+ignore/*
 .env
 .env.developer

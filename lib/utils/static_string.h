@@ -138,7 +138,7 @@ public:
   String operator=(StaticString<buffer_size> &sstr) { return sstr.toString(); }
   StaticString<buffer_size> &operator=(String &str) { return set(str); }
   StaticString<buffer_size> &operator=(const char *cstr) { return set(cstr); }
-  StaticString<buffer_size> &operator=(char *str) { return set(String(str)); }
+  StaticString<buffer_size> &operator=(char *str) { return set(reinterpret_cast<const char *>(str)); }
   StaticString<buffer_size> &operator=(fs::File file) { return this->set_from_file(file); }
 
   String &operator+(const String &str) const { return str + String(buffer); }
