@@ -199,22 +199,41 @@ void start_console(String *buffer)
   cmd_process.running = pdPASS == xTaskCreate(console_task, "cmd_task_runner", cmd_process.stack_deep, buffer, 2, &cmd_process.handle);
 }
 
-String get_console_input(HardwareSerial &console, char end_line, int timeout)
+String get_console_input(Stream &console, char end_line, int timeout)
 {
   String line;
   uint32_t start = millis(), sum;
   size_t position, size;
-  auto RIGHT_COD = 0;
+  bool esc_code = false;
 
   for (; start + timeout < millis(); vTaskDelay(10))
   {
     int available = console.available();
-    if (console.available())
+    if (esc_code)
+    {
+      if (console.available() >= 2 && console.read() == '[')
+      {
+        console.flush();
+        esc_code = false;
+      }
+      else
+      {
+        console.println();
+        return;
+      }
+    }
+    else if (console.available())
     {
       char c = console.read(); // process_char(console, line, position);
       if (c == ESC_COD)
-        return "exit";
-      else if (c == '\n')
+      {
+        esc_code = true;
+        continue;
+      }
+      else if (c == 12)
+        console.print("\e[2J\e[H");
+
+      else if (c == '\n' || c == 13)
       {
         console.write('\n');
         return line;
