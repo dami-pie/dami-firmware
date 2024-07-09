@@ -4,6 +4,8 @@
 
 console_process_t cmd_process;
 
+KeyboardBuff typing_buffer(1024);
+
 bool add_command(const char *cmd, console_command_t callback)
 {
   String base_path = "/";
@@ -34,82 +36,58 @@ void add_argument(char **argp, String arg)
   log_v("Arg: \"%s\" added", *argp);
 }
 
-void parse_arguments(String command, console_process_t *process)
+void parse_arguments(KeyboardBuff &buffer, console_process_t *process)
 {
 
-  struct arg_point
-  {
-    int start, end;
-  };
-
-  auto buff = command.c_str();
-  auto len = command.length();
-
   process->argc = 0;
+  process->argv = new char *[4];
+  size_t array_size = 4;
   log_v("Parsing args...");
   bool quote = false;
-  List<arg_point> points;
 
-  for (size_t i = 0; i < 2; i++)
+  for (; buffer.available();)
   {
-
-    for (int start = 0, end = 0, c = 0; start < len && end < len;)
+    if (!quote)
     {
-      if (!quote)
-        quote = buff[start] == '"';
-
-      auto key_char = quote ? '"' : ' ';
-
-      if ((buff[end] == key_char && end - start > 0) || ++end >= len)
-      {
-        if (i)
-        {
-
-          auto arg = command.substring(
-              buff[start] == key_char ? start + 1 : start,
-              quote ? end - 1 : end);
-
-          add_argument(&process->argv[c++], arg);
-        }
-        else
-          process->argc++;
-        quote = false;
-        start = end + 1;
-      }
+      quote = buffer.peek() == '"';
+      if (quote)
+        buffer.read();
     }
 
-    if (i == 0)
+    String arg = "";
+    for (; buffer.available();)
     {
-      process->argv = new char *[process->argc];
-      log_v("%u args", process->argc);
+      int key = buffer.read();
+      if (quote ? key == '"' : key == ' ' || key == ';')
+        break;
+      else
+        arg += (char)key;
+    }
+
+    if (arg.length() >= 1)
+    {
+      if (array_size <= process->argc)
+      {
+        process->argv = (char **)reallocarray(process->argv, array_size, array_size + 4);
+        array_size += 4;
+      }
+
+      add_argument(&process->argv[process->argc++], arg);
+      quote = false;
     }
   }
-
-  log_v("%u args for %s", process->argc, command.c_str());
 }
 
-void console_loop(String *buffer)
+void console_loop()
 {
   while (cmd_process.running)
   {
     Serial.println();
     Serial.print(CONSOLE_PROMPT);
-    *buffer = get_console_input(Serial, '\n', -1);
-
-    if (buffer->startsWith("exit"))
-    {
-      cmd_process.running = false;
-      *buffer = "";
-      log_w("Shell task ended!");
-      break;
-    }
-
-    if (!run_command(*buffer))
-      log_w("Fail on execute %s", buffer->c_str());
-    *buffer = "";
+    handle_keyboard_input(Serial, typing_buffer);
+    run_command(typing_buffer);
   }
 }
-
 console_command_t get_command(console_process_t &process)
 {
   if (process.argc <= 0 || process.argv == NULL || process.argv[0] == NULL)
@@ -137,34 +115,26 @@ console_command_t get_command(console_process_t &process)
   return command;
 }
 
-bool run_command(String buffer)
+bool run_command(KeyboardBuff &buffer)
 {
-
-  while (buffer.indexOf("  ") > 0)
-    buffer.replace("  ", " ");
-
-  if (buffer.isEmpty())
-    return true;
-  else
-    parse_arguments(buffer, &cmd_process);
-
+  parse_arguments(buffer, &cmd_process);
   auto command = get_command(cmd_process);
   if (command)
   {
     log_v("Running command %s (id: %x)", cmd_process.argv[0], command);
     command(cmd_process.argc, cmd_process.argv);
-
-    if (cmd_process.argv != NULL)
-    {
-      for (size_t i = 0; i < cmd_process.argc; i++)
-        if (cmd_process.argv[i] != NULL)
-          vPortFree(cmd_process.argv[i]);
-      vPortFree(cmd_process.argv);
-    }
-
     return true;
   }
+  else
+    log_w("Fail on execute %s", cmd_process.argv[0]);
 
+  if (cmd_process.argv != NULL)
+  {
+    for (size_t i = 0; i < cmd_process.argc; i++)
+      if (cmd_process.argv[i] != NULL)
+        vPortFree(cmd_process.argv[i]);
+    vPortFree(cmd_process.argv);
+  }
   return false;
 }
 
@@ -176,7 +146,7 @@ void console_task(void *str_buffer)
     if (Serial.available() >= 2 && Serial.read() == 0x32 && Serial.read() == 0x7e)
     {
       cmd_process.running = true;
-      console_loop((String *)str_buffer);
+      console_loop();
     }
   }
   vTaskDelete(NULL);

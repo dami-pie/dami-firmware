@@ -4,6 +4,7 @@
 #include <hash.h>
 #include <PSRamFS.h>
 #include "default/default.h"
+#include "keyboard/keyboard.h"
 
 #if !defined(CONSOLE_HOSTNAME)
 #define CONSOLE_HOSTNAME "dami-pi"
@@ -29,12 +30,10 @@ extern struct console_process_t
   char **argv = NULL;
 } cmd_process;
 
-// extern console_command_t commands[CMD_HASH_SIZE][CMD_HASH_DEEP];
-
 bool add_command(const char *cmd, console_command_t callback);
-bool run_command(String cmd_name);
+bool run_command(KeyboardBuff &);
 
-void console_loop(String *buffer);
+void console_loop();
 void console_task(void *);
 void start_console(String *buffer);
 String get_console_input(Stream &console = Serial, char end_line = ENTER_COD, int timeout = -1);
