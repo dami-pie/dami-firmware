@@ -219,7 +219,7 @@ String get_console_input(Stream &console, char end_line, int timeout)
       else
       {
         console.println();
-        return;
+        return "";
       }
     }
     else if (console.available())

@@ -37,5 +37,5 @@ bool run_command(String cmd_name);
 void console_loop(String *buffer);
 void console_task(void *);
 void start_console(String *buffer);
-String get_console_input(HardwareSerial &console = Serial, char end_line = ENTER_COD, int timeout = -1);
+String get_console_input(Stream &console = Serial, char end_line = ENTER_COD, int timeout = -1);
 #endif // __command_line_h__
