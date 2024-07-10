@@ -1,14 +1,28 @@
+#pragma once
 
-#ifndef __otp_h__
-#define __otp_h__
-
-#include "TOTP.h"
+#include <Arduino.h>
 #include "utils.h"
 #include "config/config_data.h"
 
-void update_totp_task(void *);
+extern String curr_otp;
+class OTP
+{
+public:
+  OTP(StaticString<128> *hmacKey);
+  OTP(StaticString<128> *hmacKey, int timeStep);
+  char *getCode(long timeStamp);
+  char *getCodeFromSteps(long steps);
 
-extern TOTP otp;
-extern char curr_otp[4];
-extern SemaphoreHandle_t totp_mutex;
-#endif
+private:
+  // uint8_t *_hmacKey;
+  // int _keyLength;
+  StaticString<128> *_hmacKey;
+  int _timeStep;
+  uint8_t _byteArray[8];
+  uint8_t *_hash;
+  int _offset;
+  long _truncatedHash;
+  char _code[7];
+};
+
+extern OTP otp;

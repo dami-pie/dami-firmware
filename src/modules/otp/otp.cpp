@@ -1,45 +1,65 @@
 #include "otp.h"
+#include "./sha1/sha1.h"
 
-char curr_otp[4];
-SemaphoreHandle_t totp_mutex;
-
-TOTP otp(reinterpret_cast<uint8_t *>(config.secret.getBuffer()), 128, 15);
-
-bool compare(char *str)
+// Init the library with the private key, its length and the timeStep duration
+OTP::OTP(StaticString<128> *hmacKey, int timeStep)
 {
-  if (sizeof(str) != 4)
-    return false;
 
-  for (size_t i = 0; i < 4; i++)
-    if (str[i] != curr_otp[i])
-      return false;
+  _hmacKey = hmacKey;
+  _timeStep = timeStep;
+};
 
-  return true;
+// Init the library with the private key, its length and a time step of 30sec (default for Google Authenticator)
+OTP::OTP(StaticString<128> *hmacKey)
+{
+
+  _hmacKey = hmacKey;
+  _timeStep = 30;
+};
+
+// Generate a code, using the timestamp provided
+char *OTP::getCode(long timeStamp)
+{
+
+  long steps = timeStamp / _timeStep;
+  return getCodeFromSteps(steps);
 }
 
-void update_totp_task(void *)
+// Generate a code, using the number of steps provided
+char *OTP::getCodeFromSteps(long steps)
 {
-  char new_otp[4];
-  totp_mutex = xSemaphoreCreateMutex();
-  xSemaphoreTake(totp_mutex, portMAX_DELAY);
-  for (;;)
+
+  // STEP 0, map the number of steps in a 8-bytes array (counter value)
+  _byteArray[0] = 0x00;
+  _byteArray[1] = 0x00;
+  _byteArray[2] = 0x00;
+  _byteArray[3] = 0x00;
+  _byteArray[4] = (int)((steps >> 24) & 0xFF);
+  _byteArray[5] = (int)((steps >> 16) & 0xFF);
+  _byteArray[6] = (int)((steps >> 8) & 0XFF);
+  _byteArray[7] = (int)((steps & 0XFF));
+
+  // STEP 1, get the HMAC-SHA1 hash from counter and key
+  Sha1.initHmac(reinterpret_cast<const uint8_t *>(_hmacKey->getBuffer()), _hmacKey->length());
+  Sha1.write(_byteArray, 8);
+  _hash = Sha1.resultHmac();
+
+  // STEP 2, apply dynamic truncation to obtain a 4-bytes string
+  _offset = _hash[20 - 1] & 0xF;
+  _truncatedHash = 0;
+  for (int j = 0; j < 4; ++j)
   {
-    memcpy(new_otp, otp.getCode(mktime(&timeInfo)), 4);
-    if (!compare(new_otp))
-    {
-      log_i("OTP changed...");
-      strcpy(curr_otp, new_otp);
-      log_i("giving mutex...");
-      xSemaphoreGive(totp_mutex);
-      delayMicroseconds(10);
-      log_i("taking mutex...");
-      log_i("mutex %s!", xSemaphoreTake(totp_mutex, portMAX_DELAY) == pdTRUE ? "taken" : "timeout");
-    }
-    else
-      vTaskDelay(100);
+    _truncatedHash <<= 8;
+    _truncatedHash |= _hash[_offset + j];
   }
 
-  vTaskDelete(NULL);
-  while (true)
-    ;
+  // STEP 3, compute the OTP value
+  _truncatedHash &= 0x7FFFFFFF;
+  _truncatedHash %= 1000000;
+
+  // convert the value in string, with leading zeroes
+  sprintf(_code, "%06ld", _truncatedHash);
+  return _code;
 }
+
+OTP otp(&config.secret, 15);
