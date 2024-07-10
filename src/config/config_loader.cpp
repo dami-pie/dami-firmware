@@ -19,6 +19,24 @@ void set_ntp_to_default()
   config.ntp.servers[1] = NTP_SERVER_2;
 }
 
+void save_configuration(const char *path, void *config, size_t size)
+{
+  if (config == NULL)
+  {
+    log_e("Impossible to save configuration! configuration pointer is null.");
+    return;
+  }
+
+  size_t content_size;
+  auto config_file = SPIFFS.open(path, "w", true);
+
+  if (config_file.write((byte *)config, size) != size)
+    log_e("Fail on save %s", path);
+
+  if (config_file)
+    config_file.close();
+}
+
 void load_configuration(const char *path, void *config, size_t size, std::function<void()> to_default = NULL)
 {
   if (config == NULL)
@@ -72,4 +90,25 @@ void load_config()
 
   // load broker configurations from file
   // load_configuration(BROKER_CONF_FILE, &(config.broker), sizeof(broker_config_t));
+}
+
+void config_cli(size_t argc, char **args)
+{
+  if (argc < 2)
+    return;
+  String arg_1 = args[1];
+  if (arg_1 == "load" && argc > 2)
+  {
+    String arg_2 = args[2];
+
+    if (arg_2 == "wifi")
+      load_configuration(WIFI_CONF_FILE, &config.wifi, sizeof(wifi_settings_t), set_wifi_to_default);
+    else if (arg_2 == "ntp")
+      load_configuration(NTP_SERVERS_CONF_FILE, &(config.ntp), sizeof(ntp_config_t), set_ntp_to_default);
+  }
+  else if (arg_1 == "save")
+  {
+    save_configuration(WIFI_CONF_FILE, &config.wifi, sizeof(wifi_settings_t));
+    save_configuration(NTP_SERVERS_CONF_FILE, &(config.ntp), sizeof(ntp_config_t));
+  }
 }
