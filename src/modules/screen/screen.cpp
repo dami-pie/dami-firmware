@@ -78,3 +78,23 @@ void show_layout(const char *text, uint32_t color)
   lv_obj_clear_flag(ui_TimeLabel, LV_OBJ_FLAG_HIDDEN);
   lv_obj_clear_flag(ui_DateLabel, LV_OBJ_FLAG_HIDDEN);
 }
+
+void ui_task(void *arg)
+{
+  setup_screen();
+  lv_label_set_text(ui_TimeLabel, "--:--");
+  lv_label_set_text(ui_DateLabel, "00/00/0000");
+  show_layout(LV_SYMBOL_REFRESH "\tConectando", BLUE_COLOR);
+  codeUpdate("0000");
+  lv_timer_handler();
+  typedef void (*func)(void);
+
+  auto screen_update = (func)arg;
+
+  for (char _;; xQueueReceive(ui_render_queue, &_, lv_timer_handler() % 1001))
+    if (screen_update)
+      screen_update();
+
+  log_w("ui_task terminated!");
+  vTaskDelete(NULL);
+}

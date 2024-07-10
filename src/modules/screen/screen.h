@@ -24,6 +24,7 @@
 
 static LGFX lcd;                   // declare display variable
 static const int gmtOffset = (-3); // GMT-03 [Brasilia]
+extern QueueHandle_t ui_render_queue;
 /*------------------- LVGL CONFIG --------------------*/
 // 1.Define screen resolution for LVGL
 // static const uint16_t screenWidth = 320, screenHeight = 480;
@@ -49,4 +50,7 @@ void getUpdate();
 void setup_screen();
 
 void show_layout(const char *text, uint32_t color);
+
+void ui_task(void *);
+
 #endif
