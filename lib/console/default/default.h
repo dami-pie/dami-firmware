@@ -21,4 +21,8 @@ void cat_command(size_t argc, char **argv);
 
 void rm_command(size_t argc, char **argv);
 
+void exit_command(size_t argc, char **argv);
+
+void clear_command(size_t argc, char **argv);
+
 #endif // __default_commands_h__

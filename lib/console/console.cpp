@@ -85,9 +85,12 @@ void console_loop()
     Serial.println();
     Serial.print(CONSOLE_PROMPT);
     handle_keyboard_input(Serial, typing_buffer);
-    run_command(typing_buffer);
+    Serial.println();
+    while (typing_buffer.available())
+      run_command(typing_buffer);
   }
 }
+
 console_command_t get_command(console_process_t &process)
 {
   if (process.argc <= 0 || process.argv == NULL || process.argv[0] == NULL)
@@ -165,6 +168,20 @@ void start_console(String *buffer)
   add_command("cat", cat_command);
   add_command("rm", rm_command);
   add_command("ls", list_files_command);
+  add_command("clear", clear_command);
+  add_command("exit", exit_command);
+  add_command("test", [](size_t, char **)
+              {
+    for(byte i = 10;;vTaskDelay(1)) {
+      if(Serial.available()){
+        if(i++ >= 10)
+          Serial.println(i=0);
+        else 
+          Serial.print("-");
+        Serial.print(Serial.read());
+      }
+        yield();
+    } });
 
   cmd_process.running = pdPASS == xTaskCreate(console_task, "cmd_task_runner", cmd_process.stack_deep, buffer, 2, &cmd_process.handle);
 }
@@ -232,4 +249,16 @@ String get_console_input(Stream &console, char end_line, int timeout)
     }
   }
   return line;
+}
+
+void exit_command(size_t argc, char **argv)
+{
+  cmd_process.running = false;
+}
+
+void clear_command(size_t argc, char **argv)
+{
+  Serial.write(ansi_clear_screen);
+  Serial.print(CONSOLE_PROMPT);
+  typing_buffer.flush();
 }

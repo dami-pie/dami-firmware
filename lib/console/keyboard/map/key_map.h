@@ -27,7 +27,7 @@ extern uint8_t keyboard_null[];
 extern uint8_t keyboard_dash[];
 extern uint8_t keyboard_open_brackets[];
 extern uint8_t keyboard_close_brackets[];
-extern uint8_t keyboard_space[];
+extern uint8_t keyboard_alt_space[];
 extern uint8_t keyboard_page_up[];
 
 extern uint8_t keyboard_num_pad_home[];
@@ -295,7 +295,7 @@ extern uint8_t keyboard_alt_bar[];
 #define KEYBOARD_DASH keyboard_dash
 #define KEYBOARD_OPEN_BRACKETS keyboard_open_brackets
 #define KEYBOARD_CLOSE_BRACKETS keyboard_close_brackets
-#define KEYBOARD_SPACE keyboard_space
+#define KEYBOARD_ALT_SPACE keyboard_alt_space
 
 #define KEYBOARD_EQ 61
 #define KEYBOARD_SEMICOLON 59
@@ -513,3 +513,6 @@ extern uint8_t keyboard_alt_bar[];
 #define KEYBOARD_ALT_COMMA keyboard_alt_comma
 #define KEYBOARD_ALT_DOT keyboard_alt_dot
 #define KEYBOARD_ALT_BAR keyboard_alt_bar
+
+#define KEYBOARD_PREFIX_0 keyboard_alt_bar[0]
+#define KEYBOARD_PREFIX_1 keyboard_left_arrow[0]

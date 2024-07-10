@@ -8,37 +8,47 @@ void handle_keyboard_input(Stream &console, KeyboardBuff &buffer, int end)
       continue;
 
     int key = console.read();
-    if (key >= 32 && key <= 128)
-    {
-      buffer.write(key);
+    if (key >= 32 && key <= 126 && buffer.write(key))
       console.write(key);
-    }
+
     else if (key == KEYBOARD_ESC)
     {
-      // int key_sequence[] = {-1, -1};
-      // key_sequence[0] = console.read();
-      // if (console.available())
-      //   key_sequence[1] = console.read();
+      if (console.read() == '[')
+      {
+        key = console.read();
+
+        if (key == 'D' && buffer.cursor_shift(-1) != 0)
+          console.printf(ansi_cursor_back, 1);
+        else if (key == 'C' && buffer.cursor_shift(1) != 0)
+          console.printf(ansi_cursor_forward, 1);
+      }
     }
     else if (key == KEYBOARD_CTRL_L)
-      console.write(ansi_clear_screen);
+    {
+      // console.write(ansi_clear_screen);
+      buffer.flush();
+      buffer.reset_cursor();
+      buffer.write("clear", 6);
+    }
     else if (key == end)
     {
-      // console.write(';');
+      console.write(key);
+      buffer.reset_cursor();
       return;
     }
     else if (key == KEYBOARD_CTRL_C)
     {
+      buffer.flush();
+      buffer.reset_cursor();
       buffer.write("exit", 5);
       return;
     }
-    else if (key == KEYBOARD_BACKSPACE)
+    else if ((key == KEYBOARD_BACKSPACE || key == KEYBOARD_CTRL_BACKSPACE) && buffer.available())
     {
-
-      buffer.write(key);
-      console.write(key);
+      buffer.write(KEYBOARD_BACKSPACE);
+      console.printf(ansi_cursor_back, 1);
       console.write(' ');
-      console.write(key);
+      console.write(KEYBOARD_BACKSPACE);
     }
   }
 }

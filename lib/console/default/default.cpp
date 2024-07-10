@@ -1,4 +1,5 @@
 #include "default.h"
+#include <ansi/ansi_codes.h>
 
 void reboot_command(size_t, char **) { ESP.restart(); }
 
