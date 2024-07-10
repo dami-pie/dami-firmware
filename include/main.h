@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "config/config_loader.h"
 #include "modules/wifi/cli/wifi_cli.h"
+#include "modules/screen/screen.h"
 #include "console.h"
 
 device_configurations_t config;
