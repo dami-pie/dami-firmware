@@ -162,83 +162,23 @@ extern uint8_t keyboard_alt_apostrophe[];
 extern uint8_t keyboard_alt_comma[];
 extern uint8_t keyboard_alt_dot[];
 extern uint8_t keyboard_alt_bar[];
+extern uint8_t keyboard_down_arrow_num_pad[];
+extern uint8_t keyboard_pause_break[];
+extern uint8_t keyboard_ctrl_page_up_num_pad[];
+extern uint8_t keyboard_ctrl_print_screen[];
 
 #define KEYBOARD_ESC 0x1b
 
-#define KEYBOARD_F1 keyboard_f1
-
-#define KEYBOARD_F2 keyboard_f2
-
-#define KEYBOARD_F3 keyboard_f3
-
-#define KEYBOARD_F4 keyboard_f4
-
-#define KEYBOARD_F5 keyboard_f5
-
-#define KEYBOARD_F6 keyboard_f6
-
-#define KEYBOARD_F7 keyboard_f7
-
-#define KEYBOARD_F8 keyboard_f8
-
-#define KEYBOARD_F9 keyboard_f9
-
-#define KEYBOARD_F10 keyboard_f10
-
-#define KEYBOARD_F11 keyboard_f11
-
-#define KEYBOARD_F12 keyboard_f12
-
-#define KEYBOARD_NUM_PAD_HOME keyboard_num_pad_home
-
-#define KEYBOARD_NUM_PAD_UP_ARROW keyboard_num_pad_up_arrow
-
-#define KEYBOARD_NUM_PAD_PAGE_UP keyboard_num_pad_page_up
-
-#define KEYBOARD_NUM_PAD_LEFT_ARROW keyboard_num_pad_left_arrow
-
-#define KEYBOARD_NUM_PAD_RIGHT_ARROW keyboard_num_pad_right_arrow
-
-#define KEYBOARD_NUM_PAD_END keyboard_num_pad_end
-
-#define KEYBOARD_NUM_PAD_DOWN_ARROW 0, 80
-
-#define KEYBOARD_NUM_PAD_PAGE_DOWN keyboard_num_pad_page_down
-
-#define KEYBOARD_NUM_PAD_INSERT keyboard_num_pad_insert
-
-#define KEYBOARD_NUM_PAD_DELETE keyboard_num_pad_delete
-
-#define KEYBOARD_HOME keyboard_home
-
-#define KEYBOARD_UP_ARROW keyboard_up_arrow
-
-#define KEYBOARD_PAGE_UP keyboard_page_up
-
-#define KEYBOARD_LEFT_ARROW keyboard_left_arrow
-
-#define KEYBOARD_RIGHT_ARROW keyboard_right_arrow
-
-#define KEYBOARD_END keyboard_end
-
-#define KEYBOARD_DOWN_ARROW keyboard_down_arrow
-
-#define KEYBOARD_PAGE_DOWN keyboard_page_down
-
-#define KEYBOARD_INSERT keyboard_insert
-
-#define KEYBOARD_DELETE keyboard_delete
-
-#define KEYBOARD_PAUSE_BREAK 0, 0
-
-#define KEYBOARD_BACKSPACE 8
-
-#define KEYBOARD_ENTER 13
-
-#define KEYBOARD_TAB 9
-
-#define KEYBOARD_NULL keyboard_null
-
+#define KEYBOARD_0 48
+#define KEYBOARD_1 49
+#define KEYBOARD_2 50
+#define KEYBOARD_3 51
+#define KEYBOARD_4 52
+#define KEYBOARD_5 53
+#define KEYBOARD_6 54
+#define KEYBOARD_7 55
+#define KEYBOARD_8 56
+#define KEYBOARD_9 57
 #define KEYBOARD_A 97
 #define KEYBOARD_B 98
 #define KEYBOARD_C 99
@@ -265,80 +205,65 @@ extern uint8_t keyboard_alt_bar[];
 #define KEYBOARD_X 120
 #define KEYBOARD_Y 121
 #define KEYBOARD_Z 122
-
-#define KEYBOARD_1 49
-#define KEYBOARD_2 50
-#define KEYBOARD_3 51
-#define KEYBOARD_4 52
-#define KEYBOARD_5 53
-#define KEYBOARD_6 54
-#define KEYBOARD_7 55
-#define KEYBOARD_8 56
-#define KEYBOARD_9 57
-#define KEYBOARD_0 48
-
-#define KEYBOARD_DASH 45
-#define KEYBOARD_OPEN_BRACKETS 91
-#define KEYBOARD_CLOSE_BRACKETS 93
-#define KEYBOARD_SPACE 92
-
-#define KEYBOARD_DASH 95
-#define KEYBOARD_OPEN_BRACKETS 123
-#define KEYBOARD_CLOSE_BRACKETS 125
-#define KEYBOARD_SPACE 124
-
-#define KEYBOARD_DASH 31
-#define KEYBOARD_OPEN_BRACKETS 27
-#define KEYBOARD_CLOSE_BRACKETS 29
-#define KEYBOARD_SPACE 28
-
-#define KEYBOARD_DASH keyboard_dash
-#define KEYBOARD_OPEN_BRACKETS keyboard_open_brackets
-#define KEYBOARD_CLOSE_BRACKETS keyboard_close_brackets
-#define KEYBOARD_ALT_SPACE keyboard_alt_space
-
-#define KEYBOARD_EQ 61
-#define KEYBOARD_SEMICOLON 59
+#define KEYBOARD_F1 keyboard_f1
+#define KEYBOARD_F2 keyboard_f2
+#define KEYBOARD_F3 keyboard_f3
+#define KEYBOARD_F4 keyboard_f4
+#define KEYBOARD_F5 keyboard_f5
+#define KEYBOARD_F6 keyboard_f6
+#define KEYBOARD_F7 keyboard_f7
+#define KEYBOARD_F8 keyboard_f8
+#define KEYBOARD_F9 keyboard_f9
+#define KEYBOARD_F10 keyboard_f10
+#define KEYBOARD_F11 keyboard_f11
+#define KEYBOARD_F12 keyboard_f12
 #define KEYBOARD_APOSTROPHE 39
-#define KEYBOARD_COMMA 44
-#define KEYBOARD_DOT 46
+#define KEYBOARD_BACKSPACE 8
 #define KEYBOARD_BAR 47
-#define KEYBOARD_` 96
+#define KEYBOARD_CLOSE_BRACKETS 93
+#define KEYBOARD_COMMA 44
+#define KEYBOARD_DASH 45
+#define KEYBOARD_DOT 46
+#define KEYBOARD_ENTER 13
+#define KEYBOARD_EQ 61
+#define KEYBOARD_GRAVE_ACCENT 96
+#define KEYBOARD_OPEN_BRACKETS 91
+#define KEYBOARD_SEMICOLON 59
+#define KEYBOARD_SPACE 92
+#define KEYBOARD_TAB 9
+#define KEYBOARD_DELETE keyboard_delete
+#define KEYBOARD_DELETE_NUM_PAD keyboard_num_pad_delete
+#define KEYBOARD_DOWN_ARROW keyboard_down_arrow
+#define KEYBOARD_DOWN_ARROW_NUM_PAD keyboard_down_arrow_num_pad
+#define KEYBOARD_END keyboard_end
+#define KEYBOARD_END_NUM_PAD keyboard_num_pad_end
+#define KEYBOARD_HOME keyboard_home
+#define KEYBOARD_HOME_NUM_PAD keyboard_num_pad_home
+#define KEYBOARD_INSERT keyboard_insert
+#define KEYBOARD_INSERT_NUM_PAD keyboard_num_pad_insert
+#define KEYBOARD_LEFT_ARROW keyboard_left_arrow
+#define KEYBOARD_LEFT_ARROW_NUM_PAD keyboard_num_pad_left_arrow
+#define KEYBOARD_NULL keyboard_null
+#define KEYBOARD_PAGE_DOWN keyboard_page_down
+#define KEYBOARD_PAGE_DOWN_NUM_PAD keyboard_num_pad_page_down
+#define KEYBOARD_PAGE_UP keyboard_page_up
+#define KEYBOARD_PAGE_UP_NUM_PAD keyboard_num_pad_page_up
+#define KEYBOARD_PAUSE_BREAK keyboard_pause_break
+#define KEYBOARD_RIGHT_ARROW keyboard_right_arrow
+#define KEYBOARD_RIGHT_ARROW_NUM_PAD keyboard_num_pad_right_arrow
+#define KEYBOARD_UP_ARROW keyboard_up_arrow
+#define KEYBOARD_UP_ARROW_NUM_PAD keyboard_num_pad_up_arrow
 
-#define KEYBOARD_SHIFT_F1 keyboard_shift_f1
-#define KEYBOARD_SHIFT_F2 keyboard_shift_f2
-#define KEYBOARD_SHIFT_F3 keyboard_shift_f3
-#define KEYBOARD_SHIFT_F4 keyboard_shift_f4
-#define KEYBOARD_SHIFT_F5 keyboard_shift_f5
-#define KEYBOARD_SHIFT_F6 keyboard_shift_f6
-#define KEYBOARD_SHIFT_F7 keyboard_shift_f7
-#define KEYBOARD_SHIFT_F8 keyboard_shift_f8
-#define KEYBOARD_SHIFT_F9 keyboard_shift_f9
-#define KEYBOARD_SHIFT_F10 keyboard_shift_f10
-#define KEYBOARD_SHIFT_F11 keyboard_shift_f11
-#define KEYBOARD_SHIFT_F12 keyboard_shift_f12
-#define KEYBOARD_NUM_PAD_SHIFT_HOME 55
-#define KEYBOARD_NUM_PAD_SHIFT_UP_ARROW 56
-#define KEYBOARD_NUM_PAD_SHIFT_PAGE_UP 57
-#define KEYBOARD_NUM_PAD_SHIFT_LEFT_ARROW 52
-#define KEYBOARD_NUM_PAD_SHIFT_RIGHT_ARROW 54
-#define KEYBOARD_NUM_PAD_SHIFT_END 49
-#define KEYBOARD_NUM_PAD_SHIFT_DOWN_ARROW 50
-#define KEYBOARD_NUM_PAD_SHIFT_PAGE_DOWN 51
-#define KEYBOARD_NUM_PAD_SHIFT_INSERT 48
-#define KEYBOARD_NUM_PAD_SHIFT_DELETE 46
-#define KEYBOARD_SHIFT_HOME keyboard_shift_home
-#define KEYBOARD_SHIFT_UP_ARROW keyboard_shift_up_arrow
-#define KEYBOARD_SHIFT_PAGE_UP keyboard_shift_page_up
-#define KEYBOARD_SHIFT_LEFT_ARROW keyboard_shift_left_arrow
-#define KEYBOARD_SHIFT_RIGHT_ARROW keyboard_shift_right_arrow
-#define KEYBOARD_SHIFT_END keyboard_shift_end
-#define KEYBOARD_SHIFT_DOWN_ARROW keyboard_shift_down_arrow
-#define KEYBOARD_SHIFT_PAGE_DOWN keyboard_shift_page_down
-#define KEYBOARD_SHIFT_INSERT keyboard_shift_insert
-#define KEYBOARD_SHIFT_DELETE keyboard_shift_delete
-#define KEYBOARD_SHIFT_BACKSPACE 8
-#define KEYBOARD_SHIFT_TAB keyboard_shift_tab
+#define KEYBOARD_SHIFT_0 41
+#define KEYBOARD_SHIFT_1 33
+#define KEYBOARD_SHIFT_2 64
+#define KEYBOARD_SHIFT_3 35
+#define KEYBOARD_SHIFT_4 36
+#define KEYBOARD_SHIFT_5 37
+#define KEYBOARD_SHIFT_6 94
+#define KEYBOARD_SHIFT_7 38
+#define KEYBOARD_SHIFT_8 42
+#define KEYBOARD_SHIFT_9 40
 #define KEYBOARD_SHIFT_A 65
 #define KEYBOARD_SHIFT_B 66
 #define KEYBOARD_SHIFT_C 66
@@ -365,60 +290,52 @@ extern uint8_t keyboard_alt_bar[];
 #define KEYBOARD_SHIFT_X 88
 #define KEYBOARD_SHIFT_Y 89
 #define KEYBOARD_SHIFT_Z 90
-#define KEYBOARD_SHIFT_1 33
-#define KEYBOARD_SHIFT_2 64
-#define KEYBOARD_SHIFT_3 35
-#define KEYBOARD_SHIFT_4 36
-#define KEYBOARD_SHIFT_5 37
-#define KEYBOARD_SHIFT_6 94
-#define KEYBOARD_SHIFT_7 38
-#define KEYBOARD_SHIFT_8 42
-#define KEYBOARD_SHIFT_9 40
-#define KEYBOARD_SHIFT_0 41
-#define KEYBOARD_SHIFT_EQ 43
-#define KEYBOARD_SHIFT_SEMICOLON 58
+#define KEYBOARD_SHIFT_F1 keyboard_shift_f1
+#define KEYBOARD_SHIFT_F2 keyboard_shift_f2
+#define KEYBOARD_SHIFT_F3 keyboard_shift_f3
+#define KEYBOARD_SHIFT_F4 keyboard_shift_f4
+#define KEYBOARD_SHIFT_F5 keyboard_shift_f5
+#define KEYBOARD_SHIFT_F6 keyboard_shift_f6
+#define KEYBOARD_SHIFT_F7 keyboard_shift_f7
+#define KEYBOARD_SHIFT_F8 keyboard_shift_f8
+#define KEYBOARD_SHIFT_F9 keyboard_shift_f9
+#define KEYBOARD_SHIFT_F10 keyboard_shift_f10
+#define KEYBOARD_SHIFT_F11 keyboard_shift_f11
+#define KEYBOARD_SHIFT_F12 keyboard_shift_f12
 #define KEYBOARD_SHIFT_APOSTROPHE 34
-#define KEYBOARD_SHIFT_COMMA 60
-#define KEYBOARD_SHIFT_DOT 62
+#define KEYBOARD_SHIFT_BACKSPACE 8
 #define KEYBOARD_SHIFT_BAR 63
-#define KEYBOARD_SHIFT_` 12
+#define KEYBOARD_SHIFT_CLOSE_BRACKETS 125
+#define KEYBOARD_SHIFT_COMMA 60
+#define KEYBOARD_SHIFT_DASH 95
+#define KEYBOARD_SHIFT_DELETE keyboard_shift_delete
+#define KEYBOARD_SHIFT_DELETE_NUM_PAD 46
+#define KEYBOARD_SHIFT_DOT 62
+#define KEYBOARD_SHIFT_DOWN_ARROW keyboard_shift_down_arrow
+#define KEYBOARD_SHIFT_DOWN_ARROW_NUM_PAD 50
+#define KEYBOARD_SHIFT_END keyboard_shift_end
+#define KEYBOARD_SHIFT_END_NUM_PAD 49
+#define KEYBOARD_SHIFT_EQ 43
+#define KEYBOARD_SHIFT_GRAVE_ACCENT 12
+#define KEYBOARD_SHIFT_HOME keyboard_shift_home
+#define KEYBOARD_SHIFT_HOME_NUM_PAD 55
+#define KEYBOARD_SHIFT_INSERT keyboard_shift_insert
+#define KEYBOARD_SHIFT_INSERT_NUM_PAD 48
+#define KEYBOARD_SHIFT_LEFT_ARROW keyboard_shift_left_arrow
+#define KEYBOARD_SHIFT_LEFT_ARROW_NUM_PAD 52
+#define KEYBOARD_SHIFT_OPEN_BRACKETS 123
+#define KEYBOARD_SHIFT_PAGE_DOWN keyboard_shift_page_down
+#define KEYBOARD_SHIFT_PAGE_DOWN_NUM_PAD 51
+#define KEYBOARD_SHIFT_PAGE_UP keyboard_shift_page_up
+#define KEYBOARD_SHIFT_PAGE_UP_NUM_PAD 57
+#define KEYBOARD_SHIFT_RIGHT_ARROW keyboard_shift_right_arrow
+#define KEYBOARD_SHIFT_RIGHT_ARROW_NUM_PAD 54
+#define KEYBOARD_SHIFT_SEMICOLON 58
+#define KEYBOARD_SHIFT_SPACE 124
+#define KEYBOARD_SHIFT_TAB keyboard_shift_tab
+#define KEYBOARD_SHIFT_UP_ARROW keyboard_shift_up_arrow
+#define KEYBOARD_SHIFT_UP_ARROW_NUM_PAD 56
 
-#define KEYBOARD_CTRL_F1 keyboard_ctrl_f1
-#define KEYBOARD_CTRL_F2 keyboard_ctrl_f2
-#define KEYBOARD_CTRL_F3 keyboard_ctrl_f3
-#define KEYBOARD_CTRL_F4 keyboard_ctrl_f4
-#define KEYBOARD_CTRL_F5 keyboard_ctrl_f5
-#define KEYBOARD_CTRL_F6 keyboard_ctrl_f6
-#define KEYBOARD_CTRL_F7 keyboard_ctrl_f7
-#define KEYBOARD_CTRL_F8 keyboard_ctrl_f8
-#define KEYBOARD_CTRL_F9 keyboard_ctrl_f9
-#define KEYBOARD_CTRL_F10 keyboard_ctrl_f10
-#define KEYBOARD_CTRL_F11 keyboard_ctrl_f11
-#define KEYBOARD_CTRL_F12 keyboard_ctrl_f12
-#define KEYBOARD_NUM_PAD_CTRL_HOME keyboard_num_pad_ctrl_home
-#define KEYBOARD_NUM_PAD_CTRL_UP_ARROW keyboard_num_pad_ctrl_up_arrow
-#define KEYBOARD_NUM_PAD_CTRL_PAGE_UP 0, 132
-#define KEYBOARD_NUM_PAD_CTRL_LEFT_ARROW keyboard_num_pad_ctrl_left_arrow
-#define KEYBOARD_NUM_PAD_CTRL_RIGHT_ARROW keyboard_num_pad_ctrl_right_arrow
-#define KEYBOARD_NUM_PAD_CTRL_END keyboard_num_pad_ctrl_end
-#define KEYBOARD_NUM_PAD_CTRL_DOWN_ARROW keyboard_num_pad_ctrl_down_arrow
-#define KEYBOARD_NUM_PAD_CTRL_PAGE_DOWN keyboard_num_pad_ctrl_page_down
-#define KEYBOARD_NUM_PAD_CTRL_INSERT keyboard_num_pad_ctrl_insert
-#define KEYBOARD_NUM_PAD_CTRL_DELETE keyboard_num_pad_ctrl_delete
-#define KEYBOARD_CTRL_HOME keyboard_ctrl_home
-#define KEYBOARD_CTRL_UP_ARROW keyboard_ctrl_up_arrow
-#define KEYBOARD_CTRL_PAGE_UP keyboard_ctrl_page_up
-#define KEYBOARD_CTRL_LEFT_ARROW keyboard_ctrl_left_arrow
-#define KEYBOARD_CTRL_RIGHT_ARROW keyboard_ctrl_right_arrow
-#define KEYBOARD_CTRL_END keyboard_ctrl_end
-#define KEYBOARD_CTRL_DOWN_ARROW keyboard_ctrl_down_arrow
-#define KEYBOARD_CTRL_PAGE_DOWN keyboard_ctrl_page_down
-#define KEYBOARD_CTRL_INSERT keyboard_ctrl_insert
-#define KEYBOARD_CTRL_DELETE keyboard_ctrl_delete
-#define KEYBOARD_CTRL_PRINT_SCREEN 0, 114
-#define KEYBOARD_CTRL_BACKSPACE 127
-#define KEYBOARD_CTRL_ENTER 10
-#define KEYBOARD_CTRL_TAB keyboard_ctrl_tab
 #define KEYBOARD_CTRL_A 1
 #define KEYBOARD_CTRL_B 2
 #define KEYBOARD_CTRL_C 3
@@ -445,32 +362,57 @@ extern uint8_t keyboard_alt_bar[];
 #define KEYBOARD_CTRL_X 24
 #define KEYBOARD_CTRL_Y 25
 #define KEYBOARD_CTRL_Z 26
+#define KEYBOARD_CTRL_F1 keyboard_ctrl_f1
+#define KEYBOARD_CTRL_F2 keyboard_ctrl_f2
+#define KEYBOARD_CTRL_F3 keyboard_ctrl_f3
+#define KEYBOARD_CTRL_F4 keyboard_ctrl_f4
+#define KEYBOARD_CTRL_F5 keyboard_ctrl_f5
+#define KEYBOARD_CTRL_F6 keyboard_ctrl_f6
+#define KEYBOARD_CTRL_F7 keyboard_ctrl_f7
+#define KEYBOARD_CTRL_F8 keyboard_ctrl_f8
+#define KEYBOARD_CTRL_F9 keyboard_ctrl_f9
+#define KEYBOARD_CTRL_F10 keyboard_ctrl_f10
+#define KEYBOARD_CTRL_F11 keyboard_ctrl_f11
+#define KEYBOARD_CTRL_F12 keyboard_ctrl_f12
+#define KEYBOARD_CTRL_BACKSPACE 127
+#define KEYBOARD_CTRL_CLOSE_BRACKETS 29
+#define KEYBOARD_CTRL_DASH 31
+#define KEYBOARD_CTRL_DELETE keyboard_ctrl_delete
+#define KEYBOARD_CTRL_DELETE_NUM_PAD keyboard_num_pad_ctrl_delete
+#define KEYBOARD_CTRL_DOWN_ARROW keyboard_ctrl_down_arrow
+#define KEYBOARD_CTRL_DOWN_ARROW_NUM_PAD keyboard_num_pad_ctrl_down_arrow
+#define KEYBOARD_CTRL_END keyboard_ctrl_end
+#define KEYBOARD_CTRL_END_NUM_PAD keyboard_num_pad_ctrl_end
+#define KEYBOARD_CTRL_ENTER 10
+#define KEYBOARD_CTRL_HOME keyboard_ctrl_home
+#define KEYBOARD_CTRL_HOME_NUM_PAD keyboard_num_pad_ctrl_home
+#define KEYBOARD_CTRL_INSERT keyboard_ctrl_insert
+#define KEYBOARD_CTRL_INSERT_NUM_PAD keyboard_num_pad_ctrl_insert
+#define KEYBOARD_CTRL_LEFT_ARROW keyboard_ctrl_left_arrow
+#define KEYBOARD_CTRL_LEFT_ARROW_NUM_PAD keyboard_num_pad_ctrl_left_arrow
+#define KEYBOARD_CTRL_OPEN_BRACKETS 27
+#define KEYBOARD_CTRL_PAGE_DOWN keyboard_ctrl_page_down
+#define KEYBOARD_CTRL_PAGE_DOWN_NUM_PAD keyboard_num_pad_ctrl_page_down
+#define KEYBOARD_CTRL_PAGE_UP keyboard_ctrl_page_up
+#define KEYBOARD_CTRL_PAGE_UP_NUM_PAD keyboard_ctrl_page_up_num_pad
+#define KEYBOARD_CTRL_PRINT_SCREEN keyboard_ctrl_print_screen
+#define KEYBOARD_CTRL_RIGHT_ARROW keyboard_ctrl_right_arrow
+#define KEYBOARD_CTRL_RIGHT_ARROW_NUM_PAD keyboard_num_pad_ctrl_right_arrow
+#define KEYBOARD_CTRL_SPACE 28
+#define KEYBOARD_CTRL_TAB keyboard_ctrl_tab
+#define KEYBOARD_CTRL_UP_ARROW keyboard_ctrl_up_arrow
+#define KEYBOARD_CTRL_UP_ARROW_NUM_PAD keyboard_num_pad_ctrl_up_arrow
 
-#define KEYBOARD_ALT_F1 keyboard_alt_f1
-#define KEYBOARD_ALT_F2 keyboard_alt_f2
-#define KEYBOARD_ALT_F3 keyboard_alt_f3
-#define KEYBOARD_ALT_F4 keyboard_alt_f4
-#define KEYBOARD_ALT_F5 keyboard_alt_f5
-#define KEYBOARD_ALT_F6 keyboard_alt_f6
-#define KEYBOARD_ALT_F7 keyboard_alt_f7
-#define KEYBOARD_ALT_F8 keyboard_alt_f8
-#define KEYBOARD_ALT_F9 keyboard_alt_f9
-#define KEYBOARD_ALT_F10 keyboard_alt_f10
-#define KEYBOARD_ALT_F11 keyboard_alt_f11
-#define KEYBOARD_ALT_F12 keyboard_alt_f12
-#define KEYBOARD_ALT_HOME keyboard_alt_home
-#define KEYBOARD_ALT_UP_ARROW keyboard_alt_up_arrow
-#define KEYBOARD_ALT_PAGE_UP keyboard_alt_page_up
-#define KEYBOARD_ALT_LEFT_ARROW keyboard_alt_left_arrow
-#define KEYBOARD_ALT_RIGHT_ARROW keyboard_alt_right_arrow
-#define KEYBOARD_ALT_END keyboard_alt_end
-#define KEYBOARD_ALT_DOWN_ARROW keyboard_alt_down_arrow
-#define KEYBOARD_ALT_PAGE_DOWN keyboard_alt_page_down
-#define KEYBOARD_ALT_INSERT keyboard_alt_insert
-#define KEYBOARD_ALT_DELETE keyboard_alt_delete
-#define KEYBOARD_ALT_BACKSPACE 0
-#define KEYBOARD_ALT_ENTER 0
-#define KEYBOARD_ALT_TAB keyboard_alt_tab
+#define KEYBOARD_ALT_0 keyboard_alt_0
+#define KEYBOARD_ALT_1 keyboard_alt_1
+#define KEYBOARD_ALT_2 keyboard_alt_2
+#define KEYBOARD_ALT_3 keyboard_alt_3
+#define KEYBOARD_ALT_4 keyboard_alt_4
+#define KEYBOARD_ALT_5 keyboard_alt_5
+#define KEYBOARD_ALT_6 keyboard_alt_6
+#define KEYBOARD_ALT_7 keyboard_alt_7
+#define KEYBOARD_ALT_8 keyboard_alt_8
+#define KEYBOARD_ALT_9 keyboard_alt_9
 #define KEYBOARD_ALT_A keyboard_alt_a
 #define KEYBOARD_ALT_B keyboard_alt_b
 #define KEYBOARD_ALT_C keyboard_alt_c
@@ -497,22 +439,41 @@ extern uint8_t keyboard_alt_bar[];
 #define KEYBOARD_ALT_X keyboard_alt_x
 #define KEYBOARD_ALT_Y keyboard_alt_y
 #define KEYBOARD_ALT_Z keyboard_alt_z
-#define KEYBOARD_ALT_1 keyboard_alt_1
-#define KEYBOARD_ALT_2 keyboard_alt_2
-#define KEYBOARD_ALT_3 keyboard_alt_3
-#define KEYBOARD_ALT_4 keyboard_alt_4
-#define KEYBOARD_ALT_5 keyboard_alt_5
-#define KEYBOARD_ALT_6 keyboard_alt_6
-#define KEYBOARD_ALT_7 keyboard_alt_7
-#define KEYBOARD_ALT_8 keyboard_alt_8
-#define KEYBOARD_ALT_9 keyboard_alt_9
-#define KEYBOARD_ALT_0 keyboard_alt_0
 #define KEYBOARD_ALT_EQ keyboard_alt_eq
-#define KEYBOARD_ALT_SEMICOLON keyboard_alt_semicolon
+#define KEYBOARD_ALT_F1 keyboard_alt_f1
+#define KEYBOARD_ALT_F2 keyboard_alt_f2
+#define KEYBOARD_ALT_F3 keyboard_alt_f3
+#define KEYBOARD_ALT_F4 keyboard_alt_f4
+#define KEYBOARD_ALT_F5 keyboard_alt_f5
+#define KEYBOARD_ALT_F6 keyboard_alt_f6
+#define KEYBOARD_ALT_F7 keyboard_alt_f7
+#define KEYBOARD_ALT_F8 keyboard_alt_f8
+#define KEYBOARD_ALT_F9 keyboard_alt_f9
+#define KEYBOARD_ALT_F10 keyboard_alt_f10
+#define KEYBOARD_ALT_F11 keyboard_alt_f11
+#define KEYBOARD_ALT_F12 keyboard_alt_f12
+#define KEYBOARD_ALT_ALT_SPACE keyboard_alt_spaces
 #define KEYBOARD_ALT_APOSTROPHE keyboard_alt_apostrophe
-#define KEYBOARD_ALT_COMMA keyboard_alt_comma
-#define KEYBOARD_ALT_DOT keyboard_alt_dot
+#define KEYBOARD_ALT_BACKSPACE 0
 #define KEYBOARD_ALT_BAR keyboard_alt_bar
+#define KEYBOARD_ALT_CLOSE_BRACKETS keyboard_close_brackets
+#define KEYBOARD_ALT_COMMA keyboard_alt_comma
+#define KEYBOARD_ALT_DASH keyboard_dash
+#define KEYBOARD_ALT_DELETE keyboard_alt_delete
+#define KEYBOARD_ALT_DOT keyboard_alt_dot
+#define KEYBOARD_ALT_DOWN_ARROW keyboard_alt_down_arrow
+#define KEYBOARD_ALT_END keyboard_alt_end
+#define KEYBOARD_ALT_ENTER 0
+#define KEYBOARD_ALT_HOME keyboard_alt_home
+#define KEYBOARD_ALT_INSERT keyboard_alt_insert
+#define KEYBOARD_ALT_LEFT_ARROW keyboard_alt_left_arrow
+#define KEYBOARD_ALT_OPEN_BRACKETS keyboard_open_brackets
+#define KEYBOARD_ALT_PAGE_DOWN keyboard_alt_page_down
+#define KEYBOARD_ALT_PAGE_UP keyboard_alt_page_up
+#define KEYBOARD_ALT_RIGHT_ARROW keyboard_alt_right_arrow
+#define KEYBOARD_ALT_SEMICOLON keyboard_alt_semicolon
+#define KEYBOARD_ALT_TAB keyboard_alt_tab
+#define KEYBOARD_ALT_UP_ARROW keyboard_alt_up_arrow
 
 #define KEYBOARD_PREFIX_0 keyboard_alt_bar[0]
 #define KEYBOARD_PREFIX_1 keyboard_left_arrow[0]
