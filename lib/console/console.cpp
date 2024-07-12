@@ -170,18 +170,7 @@ void start_console(String *buffer)
   add_command("ls", list_files_command);
   add_command("clear", clear_command);
   add_command("exit", exit_command);
-  add_command("test", [](size_t, char **)
-              {
-    for(byte i = 10;;vTaskDelay(1)) {
-      if(Serial.available()){
-        if(i++ >= 10)
-          Serial.println(i=0);
-        else 
-          Serial.print("-");
-        Serial.print(Serial.read());
-      }
-        yield();
-    } });
+  add_command("ping", ping_command);
 
   cmd_process.running = pdPASS == xTaskCreate(console_task, "cmd_task_runner", cmd_process.stack_deep, buffer, 2, &cmd_process.handle);
 }
@@ -194,6 +183,5 @@ void exit_command(size_t argc, char **argv)
 void clear_command(size_t argc, char **argv)
 {
   Serial.write(ansi_clear_screen);
-  Serial.print(CONSOLE_PROMPT);
   typing_buffer.flush();
 }

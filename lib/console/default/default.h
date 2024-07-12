@@ -3,6 +3,10 @@
 
 #include <Arduino.h>
 #include <SPIFFS.h>
+#include <ESP32Ping.h>
+// #include "lwip/inet.h"
+// #include "lwip/netdb.h"
+// #include "ping/ping_sock.h"
 
 void reboot_command(size_t, char **);
 
@@ -25,4 +29,5 @@ void exit_command(size_t argc, char **argv);
 
 void clear_command(size_t argc, char **argv);
 
+void ping_command(size_t, char **);
 #endif // __default_commands_h__

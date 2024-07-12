@@ -80,3 +80,14 @@ void rm_command(size_t argc, char **argv)
   else
     Serial.println("File excluded");
 }
+
+void ping_command(size_t argc, char **argv)
+{
+  if (argc < 2)
+    return;
+
+  if (Ping.ping(argv[1], argc < 3 ? 10 : String(argv[2]).toInt()))
+    Serial.printf("Average time: %0.3fms\n", Ping.averageTime());
+  else
+    Serial.println("Host unreachable!");
+}
