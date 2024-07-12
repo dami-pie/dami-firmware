@@ -33,8 +33,8 @@ typedef struct
 
 typedef struct
 {
-  uint16_t offset;
-  StaticString<16> servers[3];
+  long offset;
+  StaticString<32> servers[3];
 } ntp_config_t;
 
 typedef struct

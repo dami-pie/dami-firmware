@@ -1,4 +1,6 @@
 #include "screen.h"
+#include "modules/ntp/ntp.h"
+extern tm timeInfo;
 
 /*----------------- DISPLAY WORKERS ------------------*/
 // 1.Display callbac+ to flush the buffer to screen
@@ -19,28 +21,17 @@ void codeUpdate(String code)
   lv_qrcode_update(ui_QRCodeLogin, code.c_str(), code.length());
 }
 
-void getUpdate(std::tuple<String, String> *_data)
-{
-  auto data = timeUpdate();
-  lv_label_set_text(ui_TimeLabel, std::get<0>(data).c_str());
-  lv_label_set_text(ui_DateLabel, std::get<1>(data).c_str());
-  if (_data != nullptr)
-    *_data = data;
-}
+// void getUpdate(std::tuple<String, String> *_data)
+// {
+//   auto data = timeUpdate();
+//   lv_label_set_text(ui_TimeLabel, std::get<0>(data).c_str());
+//   lv_label_set_text(ui_DateLabel, std::get<1>(data).c_str());
+//   if (_data != nullptr)
+//     *_data = data;
+// }
 
-void getUpdate()
+void setup_screen(byte brightness)
 {
-  getUpdate(nullptr);
-}
-
-void setup_screen()
-{
-  log_i("Turning on LCD display");
-  File config_file = load_file("/configs/ui/brightness");
-  byte brightness = static_cast<byte>(
-      config_file.readStringUntil(EOF).toInt());
-  log_i("Screen brightness set to %u", brightness);
-
   /*------------------- LCD CONFIG --------------------/
    1. Initialize LovyanGFX
    2. Setting display Orientation and Brightness
@@ -87,13 +78,19 @@ void ui_task(void *arg)
   show_layout(LV_SYMBOL_REFRESH "\tConectando", BLUE_COLOR);
   codeUpdate("0000");
   lv_timer_handler();
-  typedef void (*func)(void);
 
-  auto screen_update = (func)arg;
+  char time[6];
+  char date[11];
+  auto code = (String *)arg;
 
   for (char _;; xQueueReceive(ui_render_queue, &_, lv_timer_handler() % 1001))
-    if (screen_update)
-      screen_update();
+  {
+    codeUpdate(*code);
+    strftime(time, 6, "%R", &timeInfo);
+    strftime(date, 11, "%d/%m/%Y", &timeInfo);
+    lv_label_set_text(ui_TimeLabel, time);
+    lv_label_set_text(ui_DateLabel, date);
+  }
 
   log_w("ui_task terminated!");
   vTaskDelete(NULL);

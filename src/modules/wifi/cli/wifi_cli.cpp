@@ -86,7 +86,7 @@ void get_wifi_config(int index)
   }
 }
 
-void connect_wifi_network(int index = config.wifi.main_ap)
+void connect_wifi_network(int index)
 {
   setup_network(index);
 

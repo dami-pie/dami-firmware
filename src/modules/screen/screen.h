@@ -4,7 +4,6 @@
 #define LGFX_USE_V1     // set to use new version of library
 
 #include "ui/ui.h"
-#include "utils.h"
 #include "lv_conf.h"
 #include <lvgl.h>
 #include <LovyanGFX.hpp>
@@ -45,9 +44,7 @@ void display_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *buf);
 
 void codeUpdate(String code);
 
-void getUpdate();
-
-void setup_screen();
+void setup_screen(byte brightness = 50);
 
 void show_layout(const char *text, uint32_t color);
 
