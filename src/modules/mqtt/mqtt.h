@@ -28,7 +28,7 @@ class MQTTClient : public PubSubClient
   typedef void (*reconnect_callback_t)(MQTTClient *);
   struct
   {
-    TaskHandle_t *handle;
+    TaskHandle_t handle;
     BaseType_t priority = 2;
     BaseType_t result;
   } task;
@@ -46,7 +46,7 @@ public:
     if (reconnect_callback)
     {
       reconnecting = true;
-      log_i("Triing to reconnect...");
+      log_i("Trying to reconnect...");
       reconnect_callback(this);
       reconnecting = false;
     }
@@ -60,10 +60,13 @@ public:
         8 * 1024,
         this,
         task.priority,
-        task.handle);
+        &task.handle);
 
     return task.result == pdPASS;
   }
+
+  void pause() { vTaskSuspend(task.handle); }
+  void resume() { vTaskResume(task.handle); }
 
   mqtt_client_status_t status()
   {
@@ -98,12 +101,13 @@ public:
   }
 };
 
-void setup_mqtt();
+void setup_mqtt(MQTTClient *);
 
-void message_callback(char *topic, uint8_t *data, size_t size);
-void reconnect_callback(MQTTClient *);
+void mqtt_message_callback(char *topic, uint8_t *data, size_t size);
+void mqtt_reconnect_callback(MQTTClient *);
 
-extern WiFiClientSecure client;
+// extern WiFiClientSecure client;
+extern WiFiClient client;
 extern MQTTClient mqtt;
 
 #endif // __mqtt_client_handle_h__

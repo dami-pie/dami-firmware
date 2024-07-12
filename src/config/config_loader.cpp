@@ -89,7 +89,7 @@ void load_config()
   load_configuration(NTP_SERVERS_CONF_FILE, &(config.ntp), sizeof(ntp_config_t), set_ntp_to_default);
 
   // load broker configurations from file
-  // load_configuration(BROKER_CONF_FILE, &(config.broker), sizeof(broker_config_t));
+  load_configuration(BROKER_CONF_FILE, &(config.broker), sizeof(broker_config_t), []() {});
 }
 
 void config_cli(size_t argc, char **args)

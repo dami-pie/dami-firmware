@@ -1,4 +1,5 @@
 #include "mqtt.h"
+#include "config/config_data.h"
 
 // IPAddress ip(172, 16, 0, 100);
 // IPAddress server(172, 16, 0, 2);
@@ -34,7 +35,7 @@
 //   }
 // }
 
-PROGMEM const char *cert_pem =
+PROGMEM const char cert_pem[] =
     "-----BEGIN CERTIFICATE-----\n"
     "MIIEAzCCAuugAwIBAgIUBY1hlCGvdj4NhBXkZ/uLUZNILAwwDQYJKoZIhvcNAQEL\n"
     "BQAwgZAxCzAJBgNVBAYTAkdCMRcwFQYDVQQIDA5Vbml0ZWQgS2luZ2RvbTEOMAwG\n"
@@ -63,7 +64,7 @@ PROGMEM const char *cert_pem =
 void mqtt_client_loop_task(void *_client)
 {
   auto client = (MQTTClient *)_client;
-  log_i("Stating loop...");
+  log_i("Stating mqtt loop...");
   for (;; client->loop())
   {
     if (WiFi.status() == WL_CONNECTED && !client->connected())
@@ -73,12 +74,18 @@ void mqtt_client_loop_task(void *_client)
   vTaskDelete(NULL);
 }
 
-void setup_mqtt()
+void setup_mqtt(MQTTClient *mqtt)
 {
-  client.setCACert(cert_pem);
-  mqtt.setClient(client);
-  mqtt.setServer(CONFIG_BROKER_URL, CONFIG_BROKER_PORT);
-  mqtt.setCallback(message_callback);
-  mqtt.setReconnectCallback(reconnect_callback);
-  mqtt.begin();
+  log_i("Setup mqtt server");
+  // client.setCACert(cert_pem);
+  mqtt->setClient(client);
+  log_v("Added CA certificate");
+  // mqtt->setServer(config.broker.server.getBuffer(),
+  //                 config.broker.port);
+  mqtt->setServer(CONFIG_BROKER_URL, CONFIG_BROKER_PORT);
+  log_v("Setup broker config %s:%u", config.broker.server.getBuffer(), config.broker.port);
+  mqtt->setCallback(mqtt_message_callback);
+  mqtt->setReconnectCallback(mqtt_reconnect_callback);
+  log_i("Starting server...");
+  log_i("%s", mqtt->begin() ? "Done!" : "Fail");
 }

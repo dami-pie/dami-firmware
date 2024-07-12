@@ -46,7 +46,8 @@ typedef struct
 
 typedef struct
 {
-  broker_auth_t auth;
+  uint16_t port;
+  StaticString<32> server;
 } broker_config_t;
 
 typedef struct
