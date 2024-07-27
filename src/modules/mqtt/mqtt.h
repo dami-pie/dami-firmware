@@ -106,8 +106,8 @@ void setup_mqtt(MQTTClient *);
 void mqtt_message_callback(char *topic, uint8_t *data, size_t size);
 void mqtt_reconnect_callback(MQTTClient *);
 
-// extern WiFiClientSecure client;
-extern WiFiClient client;
+extern WiFiClientSecure client;
+// extern WiFiClient client;
 extern MQTTClient mqtt;
 
 #endif // __mqtt_client_handle_h__

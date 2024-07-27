@@ -6,9 +6,13 @@
 .vscode/ipch
 secret.h
 data/configs/env/*
+data/certs/*
+conf/certs/*
+conf/auth/*
 certs/*
 **/__pycache__/*
 logs/*
 ignore/*
 .env
-.env.developer
+.env.developermkspiffs
+mkspiffs/*

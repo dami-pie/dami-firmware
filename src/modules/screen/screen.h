@@ -47,6 +47,7 @@ void codeUpdate(String code);
 void setup_screen(byte brightness = 50);
 
 void show_layout(const char *text, uint32_t color);
+void show_layout(const char *text, uint32_t color, uint32_t text_color);
 
 void ui_task(void *);
 

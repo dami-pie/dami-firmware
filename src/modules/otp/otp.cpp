@@ -62,4 +62,4 @@ char *OTP::getCodeFromSteps(long steps)
   return _code;
 }
 
-OTP otp(&config.secret, 15);
+OTP otp(&config.secret, 60);

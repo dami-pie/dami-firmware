@@ -3,7 +3,7 @@
 
 String curr_otp;
 QueueHandle_t ui_render_queue = xQueueCreate(255, 1);
-WiFiClient client;
+WiFiClientSecure client;
 MQTTClient mqtt;
 
 void setup(void)
@@ -12,11 +12,11 @@ void setup(void)
   Serial.setDebugOutput(true);
   SPIFFS.begin();
   load_config();
-  start_console(NULL);
-  add_command("wifi", wifi_cli);
-  add_command("config", config_cli);
-  add_command("ntp", ntp_cli);
-  add_command("mqtt", mqtt_cli);
+  // start_console(NULL);
+  // add_command("wifi", wifi_cli);
+  // add_command("config", config_cli);
+  // add_command("ntp", ntp_cli);
+  // add_command("mqtt", mqtt_cli);
   connect_wifi_network();
   sync_ntp();
   xTaskCreate(ui_task, "ui", 4096, &curr_otp, 2, NULL);
@@ -27,26 +27,35 @@ void setup(void)
 void loop()
 {
   auto tm = ntp_time(true);
-  curr_otp = (CONFIG_BASE_CLIENT_URL "?q=" + config.id.toString() + "&oq=") + otp.getCode(mktime(&tm));
+  auto unix_time = mktime(&tm);
+  curr_otp = config.id.toString() + "/" + otp.getCode(mktime(&tm));
+  // log_v("New otp url (%u): %s", unix_time, curr_otp.c_str());
   delay(1000);
 }
 
 void mqtt_reconnect_callback(MQTTClient *client)
 {
   yield();
-  show_layout(LV_SYMBOL_REFRESH "\tConectando", BROWN_COLOR);
-  if (client && client->connect(config.id.toString().c_str()) && client->subscribe(SECURITY_KEY))
-    show_layout(LV_SYMBOL_WIFI "\tConectado", GREEN_COLOR);
+  show_layout(LV_SYMBOL_REFRESH "\tConectando", BLACK_COLOR, WHITE_COLOR);
+  if (client && client->connect(config.id.getBuffer(), "dami", "517402") && client->subscribe(config.id.getBuffer()))
+    show_layout(LV_SYMBOL_WIFI "\tConectado", GREEN_COLOR, BLACK_COLOR);
+  else
+    show_layout(LV_SYMBOL_CLOSE "\tDesconectado", RED_COLOR, WHITE_COLOR);
 
   vTaskDelay(5000);
 }
 
 void mqtt_message_callback(char *topic, uint8_t *data, size_t size)
 {
-  char str[size];
-  memcpy(str, (const char *)data, size);
-  log_i("%s", str);
-  lv_qrcode_update(ui_QRCodeLogin, data, size);
-  xQueueSend(ui_render_queue, str, portMAX_DELAY);
-  ;
+  String message = (char *)data;
+  message = message.substring(0, size);
+  log_i("new message: [%s]: %s", topic, message.c_str());
+
+  if (config.id != topic)
+    return (void)log_i("Wrong topic");
+
+  if (curr_otp.endsWith(message))
+    log_i("Access authorized");
+  else
+    log_i("Access unauthorized");
 }

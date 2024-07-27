@@ -35,31 +35,11 @@
 //   }
 // }
 
-PROGMEM const char cert_pem[] =
-    "-----BEGIN CERTIFICATE-----\n"
-    "MIIEAzCCAuugAwIBAgIUBY1hlCGvdj4NhBXkZ/uLUZNILAwwDQYJKoZIhvcNAQEL\n"
-    "BQAwgZAxCzAJBgNVBAYTAkdCMRcwFQYDVQQIDA5Vbml0ZWQgS2luZ2RvbTEOMAwG\n"
-    "A1UEBwwFRGVyYnkxEjAQBgNVBAoMCU1vc3F1aXR0bzELMAkGA1UECwwCQ0ExFjAU\n"
-    "BgNVBAMMDW1vc3F1aXR0by5vcmcxHzAdBgkqhkiG9w0BCQEWEHJvZ2VyQGF0Y2hv\n"
-    "by5vcmcwHhcNMjAwNjA5MTEwNjM5WhcNMzAwNjA3MTEwNjM5WjCBkDELMAkGA1UE\n"
-    "BhMCR0IxFzAVBgNVBAgMDlVuaXRlZCBLaW5nZG9tMQ4wDAYDVQQHDAVEZXJieTES\n"
-    "MBAGA1UECgwJTW9zcXVpdHRvMQswCQYDVQQLDAJDQTEWMBQGA1UEAwwNbW9zcXVp\n"
-    "dHRvLm9yZzEfMB0GCSqGSIb3DQEJARYQcm9nZXJAYXRjaG9vLm9yZzCCASIwDQYJ\n"
-    "KoZIhvcNAQEBBQADggEPADCCAQoCggEBAME0HKmIzfTOwkKLT3THHe+ObdizamPg\n"
-    "UZmD64Tf3zJdNeYGYn4CEXbyP6fy3tWc8S2boW6dzrH8SdFf9uo320GJA9B7U1FW\n"
-    "Te3xda/Lm3JFfaHjkWw7jBwcauQZjpGINHapHRlpiCZsquAthOgxW9SgDgYlGzEA\n"
-    "s06pkEFiMw+qDfLo/sxFKB6vQlFekMeCymjLCbNwPJyqyhFmPWwio/PDMruBTzPH\n"
-    "3cioBnrJWKXc3OjXdLGFJOfj7pP0j/dr2LH72eSvv3PQQFl90CZPFhrCUcRHSSxo\n"
-    "E6yjGOdnz7f6PveLIB574kQORwt8ePn0yidrTC1ictikED3nHYhMUOUCAwEAAaNT\n"
-    "MFEwHQYDVR0OBBYEFPVV6xBUFPiGKDyo5V3+Hbh4N9YSMB8GA1UdIwQYMBaAFPVV\n"
-    "6xBUFPiGKDyo5V3+Hbh4N9YSMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL\n"
-    "BQADggEBAGa9kS21N70ThM6/Hj9D7mbVxKLBjVWe2TPsGfbl3rEDfZ+OKRZ2j6AC\n"
-    "6r7jb4TZO3dzF2p6dgbrlU71Y/4K0TdzIjRj3cQ3KSm41JvUQ0hZ/c04iGDg/xWf\n"
-    "+pp58nfPAYwuerruPNWmlStWAXf0UTqRtg4hQDWBuUFDJTuWuuBvEXudz74eh/wK\n"
-    "sMwfu1HFvjy5Z0iMDU8PUDepjVolOCue9ashlS4EB5IECdSR2TItnAIiIwimx839\n"
-    "LdUdRudafMu5T5Xma182OC0/u/xRlEm+tvKGGmfFcN0piqVl8OrSPBgIlb+1IKJE\n"
-    "m/XriWr/Cq4h/JfB7NTsezVslgkBaoU=\n"
-    "-----END CERTIFICATE-----";
+const char cert_pem[] = CERT_PEM;
+
+const char client_crt[] = CLIENT_CRT;
+
+const char client_key[] = CLIENT_KEY;
 
 void mqtt_client_loop_task(void *_client)
 {
@@ -74,16 +54,27 @@ void mqtt_client_loop_task(void *_client)
   vTaskDelete(NULL);
 }
 
+IPAddress address;
 void setup_mqtt(MQTTClient *mqtt)
 {
   log_i("Setup mqtt server");
-  // client.setCACert(cert_pem);
+  client.setCACert(cert_pem);
+  client.setCertificate(client_crt);
+  client.setPrivateKey(client_key);
+  // log_v("Added CA certificate");
   mqtt->setClient(client);
-  log_v("Added CA certificate");
-  // mqtt->setServer(config.broker.server.getBuffer(),
-  //                 config.broker.port);
-  mqtt->setServer(CONFIG_BROKER_URL, CONFIG_BROKER_PORT);
-  log_v("Setup broker config %s:%u", config.broker.server.getBuffer(), config.broker.port);
+  if (address.fromString(config.broker.server.getBuffer()))
+  {
+    mqtt->setServer(address, config.broker.port);
+    log_d("broker host defined as %s:%u", address.toString(), config.broker.port);
+  }
+  else
+  {
+    mqtt->setServer(config.broker.server.getBuffer(), config.broker.port);
+    log_d("broker host defined as %s:%u", config.broker.server.getBuffer(), config.broker.port);
+  }
+
+  // log_d("Setup broker url mqtt://%s:%u", mqtt, config.broker.port);
   mqtt->setCallback(mqtt_message_callback);
   mqtt->setReconnectCallback(mqtt_reconnect_callback);
   log_i("Starting server...");

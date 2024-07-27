@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import os
 import re
 from sys import argv
@@ -22,14 +24,14 @@ for file_path in files:
 env = {}
 for file_path in file_paths:
   try:
-    test_str = re.compile('\s*(\"[^\n]*\")')
+    test_str = re.compile(r'\s*(\"[^\n]*\")')
     
     with open(file_path) as file:
       for line in file:
         if not line.startswith('#') and not line.startswith(';'):
           nline = line.replace('\n', '')
           if len(nline) > 0:
-            var = nline.split('=')
+            var = nline.split('=', 1)
             key, value = var[0], var[1]
             is_str = bool(test_str.match(value))
             env[key] = f"'{value}'".replace("\\", '\\\\') if  is_str >= 1 else value

@@ -61,6 +61,12 @@ void setup_screen(byte brightness)
   ui_init();
 }
 
+void show_layout(const char *text, uint32_t color, uint32_t text_color)
+{
+  lv_obj_set_style_text_color(ui_WifiLabel, lv_color_hex(text_color), LV_PART_MAIN | LV_STATE_DEFAULT);
+  show_layout(text, color);
+}
+
 void show_layout(const char *text, uint32_t color)
 {
   lv_label_set_text(ui_WifiLabel, text);
