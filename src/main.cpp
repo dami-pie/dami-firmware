@@ -22,6 +22,7 @@ void setup(void)
   xTaskCreate(ui_task, "ui", 4096, &curr_otp, 2, NULL);
   delay(1000);
   setup_mqtt(&mqtt);
+  setup_lock();
 }
 
 void loop()
@@ -55,7 +56,10 @@ void mqtt_message_callback(char *topic, uint8_t *data, size_t size)
     return (void)log_i("Wrong topic");
 
   if (curr_otp.endsWith(message))
+  {
     log_i("Access authorized");
+    open_lock(5000UL);
+  }
   else
     log_i("Access unauthorized");
 }
