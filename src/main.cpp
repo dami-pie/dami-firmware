@@ -1,113 +1,65 @@
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
-#include <WebSocketsClient.h>
-#include <SocketIoClient.h>
-#define SERVER_ADRESS "192.168.15.31"
-#define SERVER_URL "http://192.168.15.31:3030"
-#define LOGIN_PATH SERVER_URL "/login"
+#include "main.h"
+#include <WiFiClientSecure.h>
 
-SocketIoClient webSocket;
-WiFiClient client;
-HTTPClient http;
-String full_login = LOGIN_PATH "?mac=";
-String login_code;
+String curr_otp;
+QueueHandle_t ui_render_queue = xQueueCreate(255, 1);
+WiFiClientSecure client;
+MQTTClient mqtt;
 
-void open_event(const char *payload, size_t length)
+void setup(void)
 {
-  // open the dor
-  // await close
-  // buzz if don't close it
-  // sleep if is allred closed
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(5000);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  webSocket.disconnect();
-  ESP.deepSleepMax();
-}
-
-void on_disconnect(const char *payload, size_t length)
-{
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  ESP.deepSleepMax();
-}
-
-void setupWifi()
-{
-  WiFi.begin("GVT-8D59", "arer3366547");
-
-  Serial.print("[WiFi]: Connecting");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println();
-
-  Serial.print("[WiFi]: Connected, IP address: ");
-  Serial.println(WiFi.localIP());
-
-  full_login += WiFi.macAddress();
-}
-
-String login()
-{
-  // server preconnect
-  client.connect(SERVER_URL, 3030);
-  Serial.println("[HTTP]: Logando... ");
-
-  bool http_sucess_connection = http.begin(client, full_login);
-  if (http_sucess_connection)
-  {
-    Serial.println("[HTTP]: Esperando resposta...");
-    int http_status = http.GET();
-    String http_response = "";
-    if (http_status != -1 && http_status == 200)
-    {
-      http_response = http.getString();
-      Serial.println("[HTTP Response]: \"" + http_response + "\"");
-      webSocket.begin("192.168.15.31", 3030);
-    }
-    else
-    {
-      Serial.print("[HTTP Error]: ");
-      Serial.print(http_status);
-    }
-    http.end();
-    return http_response;
-  }
-  else
-  {
-    Serial.println("[HTTP]: Falha de conexão...");
-    return "";
-  }
-}
-
-void setup()
-{
-  Serial.begin(115200);
+  Serial.begin(115200); /* prepare for possible serial debug */
   Serial.setDebugOutput(true);
-  Serial.println();
-  pinMode(LED_BUILTIN, OUTPUT);
-  delay(3000);
-  setupWifi();
-  String login_response = login();
-  if (login_response.length())
-  {
-    webSocket.on(login_response.c_str(), open_event);
-    webSocket.on("disconnect", on_disconnect);
-  }
-  else
-  {
-    ESP.deepSleepMax();
-  }
+  SPIFFS.begin();
+  load_config();
+  // start_console(NULL);
+  // add_command("wifi", wifi_cli);
+  // add_command("config", config_cli);
+  // add_command("ntp", ntp_cli);
+  // add_command("mqtt", mqtt_cli);
+  connect_wifi_network();
+  sync_ntp();
+  xTaskCreate(ui_task, "ui", 4096, &curr_otp, 2, NULL);
+  delay(1000);
+  setup_mqtt(&mqtt);
+  setup_lock();
 }
 
 void loop()
 {
-  webSocket.loop();
-  delay(100);
+  auto tm = ntp_time(true);
+  auto unix_time = mktime(&tm);
+  curr_otp = config.id.toString() + "/" + otp.getCode(mktime(&tm));
+  // log_v("New otp url (%u): %s", unix_time, curr_otp.c_str());
+  delay(1000);
+}
+
+void mqtt_reconnect_callback(MQTTClient *client)
+{
+  yield();
+  show_layout(LV_SYMBOL_REFRESH "\tConectando", BLACK_COLOR, WHITE_COLOR);
+  if (client && client->connect(config.id.getBuffer(), "dami", "517402") && client->subscribe(config.id.getBuffer()))
+    show_layout(LV_SYMBOL_WIFI "\tConectado", GREEN_COLOR, BLACK_COLOR);
+  else
+    show_layout(LV_SYMBOL_CLOSE "\tDesconectado", RED_COLOR, WHITE_COLOR);
+
+  vTaskDelay(5000);
+}
+
+void mqtt_message_callback(char *topic, uint8_t *data, size_t size)
+{
+  String message = (char *)data;
+  message = message.substring(0, size);
+  log_i("new message: [%s]: %s", topic, message.c_str());
+
+  if (config.id != topic)
+    return (void)log_i("Wrong topic");
+
+  if (curr_otp.endsWith(message))
+  {
+    log_i("Access authorized");
+    open_lock(5000UL);
+  }
+  else
+    log_i("Access unauthorized");
 }
